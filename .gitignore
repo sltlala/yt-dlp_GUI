@@ -1,12 +1,9 @@
-.idea/
 *.db
 *.spec
 *.exe
 __pycache__
 *.log
 *.spec
-test.py
-README.html
 *.7z
 *.mp4
 *.mkv
@@ -16,4 +13,6 @@ README.html
 *build
 *dist
 *info
-venv/
+venv
+test.py
+README.html
