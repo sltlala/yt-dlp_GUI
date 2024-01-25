@@ -3,16 +3,21 @@ import PySide6
 
 import yt_dlp
 from PySide6 import QtWidgets
-from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget
-from PySide6.QtGui import QIcon, QFont, QPixmap, QImage
-from PySide6.QtGui import QCursor, QKeySequence, QFontDatabase
+from PySide6.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
+# from PySide6.QtGui import QIcon, QFont, QPixmap, QImage
+# from PySide6.QtGui import QCursor, QKeySequence, QFontDatabase
 
 try:
     os.chdir(os.path.dirname(__file__))
 except:
     print('更改工作目录失败，关系不大，不用管它')
 
-class MainWindow(QtWidgets.QMainWindow):
+styleFile = 'ui/resources/stylesheets/style.css'  # 样式表的路径
+finalCommand = ''
+
+class mainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setup_ui()
@@ -32,7 +37,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.helpTab, "帮助")
 
         self.setWindowTitle("yt-dlp_GUI")
-        self.setWindowIcon(QIcon("pics/icons/favicon.ico"))
+        self.setWindowIcon(QIcon("ui/resources/icons/favicon.ico"))
 
     def loadStyleSheet(self):
         global styleFile
@@ -50,7 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # 在按下 F5 的时候重载 style.css 主题
         if (event.key() == Qt.Key_F5):
             self.loadStyleSheet()
-            self.status.showMessage('已成功更新主题', 800)
+            #self.status.showMessage('已成功更新主题', 800)
 
 class SystemTray(QSystemTrayIcon):
     def __init__(self, icon, window):
@@ -62,10 +67,10 @@ class SystemTray(QSystemTrayIcon):
         self.tray_menu = QMenu(QApplication.desktop())  # 创建菜单
         # self.RestoreAction = QAction(u'还原 ', self, triggered=self.showWindow)  # 添加一级菜单动作选项(还原主窗口)
         self.QuitAction = QAction(self.tr('退出'), self, triggered=self.quit)  # 添加一级菜单动作选项(退出程序)
-        # self.StyleAction = QAction(self.tr('更新主题'), self, triggered=mainWindow.loadStyleSheet)  # 添加一级菜单动作选项(更新 QSS)
+        self.StyleAction = QAction(self.tr('更新主题'), self, triggered=mainWindow.loadStyleSheet)  # 添加一级菜单动作选项(更新 QSS)
         # self.tray_menu.addAction(self.RestoreAction)  # 为菜单添加动作
         self.tray_menu.addAction(self.QuitAction)
-        # self.tray_menu.addAction(self.StyleAction)
+        self.tray_menu.addAction(self.StyleAction)
         self.setContextMenu(self.tray_menu)  # 设置系统托盘菜单
         self.show()
 
@@ -95,9 +100,37 @@ class SystemTray(QSystemTrayIcon):
                 # self.window.show()
                 pass
 
+class YtdlpMainTab(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupGui()
+        #self.initValue()
+
+    def setupGui(self):
+        self.下载vbox = QVBoxLayout()
+
+class ConfigTab(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupGui()
+        #self.initValue()
+
+    def setupGui(self):
+        self.下载vbox = QVBoxLayout()
+
+class HelpTab(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupGui()
+        #self.initValue()
+
+    def setupGui(self):
+        self.下载vbox = QVBoxLayout()
+
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
-    window = MainWindow()
+    window = mainWindow()
     window.show()
     sys.exit(app.exec())
