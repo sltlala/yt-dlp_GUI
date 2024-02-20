@@ -10,6 +10,8 @@ python = "3.11"
 pyside6 = "^6.6.2"
 nuitka = "^2.0.3"
 yt-dlp = "^2023.12.30"
+pre-commit = "^3.6.2"
+ruff = "^0.2.2"
 
 
 [build-system]
