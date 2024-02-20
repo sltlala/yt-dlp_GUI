@@ -1,0 +1,32 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_stages:
+-   commit
+
+default_language_version:
+    python: python3.11
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+        log_file: logs/pre-commit.log
+    -   id: end-of-file-fixer
+        log_file: logs/pre-commit.log
+    -   id: trailing-whitespace
+        log_file: logs/pre-commit.log
+    -   id: check-added-large-files
+        log_file: logs/pre-commit.log
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.2
+    hooks:
+    -   id: ruff
+        types_or: [ python, pyi, jupyter ]
+        args: [ --fix ]
+        log_file: logs/pre-commit.log
+    # Run the formatter.
+    -   id: ruff-format
+        types_or: [ python, pyi, jupyter ]
+        log_file: logs/pre-commit.log
