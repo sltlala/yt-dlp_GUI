@@ -23,7 +23,7 @@ try:
 except FileNotFoundError:
     print("更改工作目录失败，关系不大，不用管它")
 
-styleFile = "/resources/stylesheets/style.css"  # 样式表的路径
+styleFile = "core/ui/resources/stylesheets/style.css"  # 样式表的路径
 finalCommand = ""
 
 
@@ -77,11 +77,11 @@ class mainWindow(QtWidgets.QMainWindow):
 
 
 class SystemTray(QSystemTrayIcon):
-    def __init__(self, icon, window):
+    def __init__(self, icon, mainWindow):
         super(SystemTray, self).__init__()
-        self.window = window
+        self.window = mainWindow
         self.setIcon(icon)
-        self.setParent(window)
+        self.setParent(mainWindow)
         self.activated.connect(self.trayEvent)  # 设置托盘点击事件处理函数
         self.tray_menu = QMenu(QApplication.desktop())  # 创建菜单
         # self.RestoreAction = QAction(u'还原 ', self, triggered=self.showWindow)  # 添加一级菜单动作选项(还原主窗口)
@@ -106,7 +106,7 @@ class SystemTray(QSystemTrayIcon):
     def quit(self):
         sys.stdout = sys.__stdout__
         self.hide()
-        # App.quit()
+        self.quit()
 
     def trayEvent(self, reason):
         # 鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
