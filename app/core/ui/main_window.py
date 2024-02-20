@@ -21,9 +21,9 @@ from PySide6.QtWidgets import (
 try:
     os.chdir(os.path.dirname(__file__))
 except FileNotFoundError:
-    print("更改工作目录失败，关系不大，不用管它")
+    print("更改工作目录失败")
 
-styleFile = "core/ui/resources/stylesheets/style.css"  # 样式表的路径
+styleFile = "/resources/stylesheets/style.css"  # 样式表的路径
 finalCommand = ""
 
 
@@ -64,16 +64,15 @@ class mainWindow(QtWidgets.QMainWindow):
                     self.setStyleSheet(style.read())
         except FileNotFoundError:
             QMessageBox.warning(
-                self,
-                self.tr("主题载入错误"),
-                self.tr('未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。'),
+                "主题载入错误",
+                '未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。',
             )
 
     def keyPressEvent(self, event) -> None:
         # 在按下 F5 的时候重载 style.css 主题
         if event.key() == Qt.Key.Key_F5:
             self.loadStyleSheet()
-            # self.statusBar().showMessage("已成功更新主题", 800)
+            self.statusBar().showMessage("已成功更新主题", 800)
 
 
 class SystemTray(QSystemTrayIcon):
@@ -84,7 +83,8 @@ class SystemTray(QSystemTrayIcon):
         self.setParent(mainWindow)
         self.activated.connect(self.trayEvent)  # 设置托盘点击事件处理函数
         self.tray_menu = QMenu(QApplication.desktop())  # 创建菜单
-        # self.RestoreAction = QAction(u'还原 ', self, triggered=self.showWindow)  # 添加一级菜单动作选项(还原主窗口)
+        # 添加一级菜单动作选项(还原主窗口)
+        # self.RestoreAction = QAction(u'还原 ', self, triggered=self.showWindow)
         self.QuitAction = QAction(
             self.tr("退出"), self, triggered=self.quit
         )  # 添加一级菜单动作选项(退出程序)
@@ -109,7 +109,8 @@ class SystemTray(QSystemTrayIcon):
         self.quit()
 
     def trayEvent(self, reason):
-        # 鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
+        # 鼠标点击icon传递的信号会带有一个整形的值，
+        # 1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
         if reason == 2 or reason == 3:
             if mainWindow.isMinimized(self) or not mainWindow.isVisible(self):
                 # 若是最小化或者最小化到托盘，则先正常显示窗口，再变为活动窗口（暂时显示在最前面）
