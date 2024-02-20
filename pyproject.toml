@@ -6,7 +6,7 @@ authors = ["sltlala <sltlala@163.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11"
+python = ">=3.10"
 pyside6 = "^6.6.2"
 nuitka = "^2.0.3"
 yt-dlp = "^2023.12.30"
