@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "yt-dlp-gui"
+version = "0.1.0"
+description = "virtualenvs.create=true"
+authors = ["sltlala <sltlala@163.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11"
+pyside6 = "^6.6.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
