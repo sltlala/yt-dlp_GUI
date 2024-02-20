@@ -31,6 +31,9 @@ class mainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.tabs = None
+        self.ytdlpMainTab = None
+        self.configTab = None
+        self.helpTab = None
         self.setup_ui()
         self.loadStyleSheet()
 
@@ -70,7 +73,7 @@ class mainWindow(QtWidgets.QMainWindow):
         # 在按下 F5 的时候重载 style.css 主题
         if event.key() == Qt.Key.Key_F5:
             self.loadStyleSheet()
-            self.statusBar().showMessage("已成功更新主题", 800)
+            # self.statusBar().showMessage("已成功更新主题", 800)
 
 
 class SystemTray(QSystemTrayIcon):
@@ -108,7 +111,7 @@ class SystemTray(QSystemTrayIcon):
     def trayEvent(self, reason):
         # 鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
         if reason == 2 or reason == 3:
-            if mainWindow.isMinimized() or not mainWindow.isVisible():
+            if mainWindow.isMinimized(self) or not mainWindow.isVisible(self):
                 # 若是最小化或者最小化到托盘，则先正常显示窗口，再变为活动窗口（暂时显示在最前面）
                 self.window.showNormal()
                 self.window.activateWindow()
