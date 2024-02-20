@@ -21,3 +21,7 @@ priority = "secondary"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["F401"]
