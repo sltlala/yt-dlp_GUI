@@ -48,7 +48,7 @@ class mainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.helpTab, "帮助")
 
         self.setWindowTitle("yt-dlp_GUI")
-        self.setWindowIcon(QIcon("ui/resources/icons/favicon.ico"))
+        self.setWindowIcon(QIcon("core/ui/resources/icons/favicon.ico"))
 
     def loadStyleSheet(self):
         global styleFile
@@ -68,9 +68,9 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def keyPressEvent(self, event) -> None:
         # 在按下 F5 的时候重载 style.css 主题
-        if event.key() == Qt.Key_F5:
+        if event.key() == Qt.Key.Key_F5:
             self.loadStyleSheet()
-            # self.status.showMessage('已成功更新主题', 800)
+            self.statusBar().showMessage("已成功更新主题", 800)
 
 
 class SystemTray(QSystemTrayIcon):

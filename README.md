@@ -33,3 +33,43 @@ MyDownloadTool/
 ├── LICENSE            # 许可证文件
 └── setup.py           # 包打包和安装脚本
 ````
+````
+MyDownloadTool/
+├── app/
+│   ├── __init__.py
+│   ├── launcher.py
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── database.py
+│   │   │   └── download_task.py
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── download_manager.py
+│   │   │   └── aria2_config.py
+│   │   ├── ui/
+│   │   │   ├── __init__.py
+│   │   │   ├── main_window.py
+│   │   │   ├── widgets/
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── task_list_widget.py
+│   │   │   └── resources/
+│   │   │       ├── icons/
+│   │   │       └── stylesheets/
+│   │   └── utils/
+│   │       ├── __init__.py
+│   │       └── helper_functions.py
+│   └── app_constants.py
+├── config/
+│   ├── dev/
+│   │   ├── aria2.conf
+│   │   └── app_settings.json
+│   ├── test/
+│   └── prod/
+├── logs/
+├── requirements.txt
+├── README.md
+├── LICENSE
+└── setup.py
+````

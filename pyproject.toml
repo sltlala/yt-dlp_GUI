@@ -13,6 +13,10 @@ yt-dlp = "^2023.12.30"
 pre-commit = "^3.6.2"
 ruff = "^0.2.2"
 
+[[tool.poetry.source]]
+name = "mirrors"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+priority = "secondary"
 
 [build-system]
 requires = ["poetry-core"]
