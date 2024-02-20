@@ -23,7 +23,7 @@ try:
 except FileNotFoundError:
     print("更改工作目录失败，关系不大，不用管它")
 
-styleFile = "ui/resources/stylesheets/style.css"  # 样式表的路径
+styleFile = "core/ui/resources/stylesheets/style.css"  # 样式表的路径
 finalCommand = ""
 
 
@@ -64,9 +64,7 @@ class mainWindow(QtWidgets.QMainWindow):
                     self.setStyleSheet(style.read())
         except FileNotFoundError:
             QMessageBox.warning(
-                self,
-                self.tr("主题载入错误"),
-                self.tr('未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。'),
+                "主题载入错误", '未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。'
             )
 
     def keyPressEvent(self, event) -> None:
