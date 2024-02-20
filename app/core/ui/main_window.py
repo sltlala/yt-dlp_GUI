@@ -23,11 +23,11 @@ try:
 except FileNotFoundError:
     print("更改工作目录失败")
 
-styleFile = "/resources/stylesheets/style.css"  # 样式表的路径
+styleFile = "./resources/stylesheets/style.css"  # 样式表的路径
 finalCommand = ""
 
 
-class mainWindow(QtWidgets.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.tabs = None
@@ -35,7 +35,7 @@ class mainWindow(QtWidgets.QMainWindow):
         self.configTab = None
         self.helpTab = None
         self.setup_ui()
-        self.loadStyleSheet()
+        self.load_style_sheet()
 
     def setup_ui(self):
         self.tabs = QTabWidget()
@@ -51,27 +51,25 @@ class mainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.helpTab, "帮助")
 
         self.setWindowTitle("yt-dlp_GUI")
-        self.setWindowIcon(QIcon("core/ui/resources/icons/favicon.ico"))
+        self.setWindowIcon(QIcon("./resources/icons/favicon.ico"))
 
-    def loadStyleSheet(self):
+    def load_style_sheet(self):
         global styleFile
         try:
-            try:
-                with open(styleFile, "r", encoding="utf-8") as style:
-                    self.setStyleSheet(style.read())
-            except UnicodeDecodeError:
-                with open(styleFile, "r", encoding="gbk") as style:
-                    self.setStyleSheet(style.read())
+            with open(styleFile, "r", encoding="UTF-8") as style:
+                self.setStyleSheet(style.read())
         except FileNotFoundError:
             QMessageBox.warning(
                 "主题载入错误",
                 "未能成功载入主题，请确保软件根目录有 'style.css' 文件存在。",
             )
+        except UnicodeDecodeError:
+            self.statusBar().showMessage("文件编码错误,请使用UTF8编码", 800)
 
     def keyPressEvent(self, event) -> None:
         # 在按下 F5 的时候重载 style.css 主题
         if event.key() == Qt.Key.Key_F5:
-            self.loadStyleSheet()
+            self.load_style_sheet()
             self.statusBar().showMessage("已成功更新主题", 800)
 
 
@@ -112,7 +110,7 @@ class SystemTray(QSystemTrayIcon):
         # 鼠标点击icon传递的信号会带有一个整形的值，
         # 1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
         if reason == 2 or reason == 3:
-            if mainWindow.isMinimized(self) or not mainWindow.isVisible(self):
+            if MainWindow.isMinimized(self) or not MainWindow.isVisible(self):
                 # 若是最小化或者最小化到托盘，则先正常显示窗口，再变为活动窗口（暂时显示在最前面）
                 self.window.showNormal()
                 self.window.activateWindow()
@@ -157,6 +155,6 @@ class HelpTab(QWidget):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
-    window = mainWindow()
+    window = MainWindow()
     window.show()
     sys.exit(app.exec())
