@@ -65,7 +65,7 @@ class mainWindow(QtWidgets.QMainWindow):
         except FileNotFoundError:
             QMessageBox.warning(
                 "主题载入错误",
-                '未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。',
+                "未能成功载入主题，请确保软件根目录有 'style.css' 文件存在。",
             )
 
     def keyPressEvent(self, event) -> None:
