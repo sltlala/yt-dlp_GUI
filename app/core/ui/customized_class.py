@@ -35,3 +35,23 @@ class AutoPasteLineEdit(QLineEdit):
                 self.setText(clipboard_text)
 
         super().mousePressEvent(event)
+
+
+# 可拖入文件的单行编辑框
+class DragFileLineEdit(QLineEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore()

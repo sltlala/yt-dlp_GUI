@@ -133,36 +133,73 @@ class SystemTray(QSystemTrayIcon):
 class YtdlpMainTab(QWidget):
     def __init__(self):
         super().__init__()
+        self.select_dir_button = None
+        self.select_dir_hbox = None
+        self.select_dir_hbox_control = None
+        self.output_path_line_edit = None
+        self.output_label = None
         self.download_button = None
-        self.download_vbox = None
+        self.download_hbox = None
         self.url_line_edit = None
         self.url_label = None
-        self.download_vbox_control = None
+        self.download_hbox_control = None
         self.top_widget_hbox = None
         self.main_widget = None
         self.setupGui()
         # self.initValue()
 
     def setupGui(self):
-        self.download_vbox = QHBoxLayout()
-        self.url_label = QLabel(self.tr("视频链接："))
-        self.url_line_edit = customized_class.AutoPasteLineEdit()
-        self.url_line_edit.setPlaceholderText(self.tr("输入要下载的视频链接"))
-        self.url_line_edit.setToolTip(self.tr("输入要下载的视频链接"))
+        # 下载链接输入
+        if True:
+            self.url_label = QLabel(self.tr("视频链接："))
+            self.url_line_edit = customized_class.AutoPasteLineEdit()
+            self.url_line_edit.setPlaceholderText(self.tr("输入要下载的视频链接"))
+            self.url_line_edit.setToolTip(self.tr("输入要下载的视频链接"))
+            self.url_line_edit.setMaxLength(100)
+            self.url_line_edit.textChanged.connect(helper_functions.generateFinalCommand())
+            self.download_button = QPushButton(self.tr("开始下载"))
+            self.download_button.clicked.connect(helper_functions.runFinalCommandButtonClicked())
 
-        self.download_button = QPushButton(self.tr("开始下载"))
-        self.download_button.clicked.connect(helper_functions.generateFinalCommand(self))
+            self.download_hbox = QHBoxLayout()
+            self.download_hbox.addWidget(self.url_label)
+            self.download_hbox.addWidget(self.url_line_edit)
+            self.download_hbox.addWidget(self.download_button)
+            self.download_hbox_control = QWidget()
+            self.download_hbox_control.setLayout(self.download_hbox)
 
-        self.download_vbox.addWidget(self.url_label)
-        self.download_vbox.addWidget(self.url_line_edit)
-        self.download_vbox.addWidget(self.download_button)
-        self.download_vbox_control = QWidget()
-        self.download_vbox_control.setLayout(self.download_vbox)
+        # 下载选项
+        if True:
+            # TODO：{
+            #  --format ba+bv,b*
+            #  --output -o '%(channel)s/%(title)s.%(ext)s'
+            #  --merge-output-format MP4,MKV
+            #  --cookies-from-browser chrome,edge,firefox
+            #  --downloader
+            #  --downloader-args aria2c:'-x 16 -k 1M'
+            #  --download-dir D:/
+            #  --paths
+            #  --download-archive './%(channel)s/archive.txt'
+            #  --proxy  http://127.0.0.1:3030/
+            #  }
 
-        # self.main_widget = QVBoxLayout()
-        # self.main_widget.addLayout(self.download_vbox)
+            self.output_label = QLabel(self.tr("输出路径："))
+            self.output_path_line_edit = customized_class.DragFileLineEdit()
+            self.output_path_line_edit.setPlaceholderText(self.tr("填入下载输出目录"))
+            self.output_path_line_edit.setToolTip(self.tr("填入下载输出目录"))
+            self.output_path_line_edit.textChanged.connect(helper_functions.generateFinalCommand())
+            self.select_dir_button = QPushButton(self.tr("选择文件夹"))
+            self.select_dir_button.clicked.connect(helper_functions.chooseDirButtonClicked(self))
+
+            self.select_dir_hbox = QHBoxLayout()
+            self.select_dir_hbox.addWidget(self.output_label)
+            self.select_dir_hbox.addWidget(self.output_path_line_edit)
+            self.select_dir_hbox.addWidget(self.select_dir_button)
+            self.select_dir_hbox_control = QWidget()
+            self.select_dir_hbox_control.setLayout(self.select_dir_hbox)
+
         self.top_widget_hbox = QVBoxLayout()
-        self.top_widget_hbox.addWidget(self.download_vbox_control)
+        self.top_widget_hbox.addWidget(self.download_hbox_control)
+        self.top_widget_hbox.addWidget(self.select_dir_hbox_control)
         self.setLayout(self.top_widget_hbox)
 
 
