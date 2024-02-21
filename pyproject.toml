@@ -28,12 +28,12 @@ line-length = 100
 indent-width = 4
 
 [tool.ruff.lint]
-select = ["E", "F"]
+select = ["E", "F", "B"]
 ignore = ["F401"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
-unfixable = []
+unfixable = ["B"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

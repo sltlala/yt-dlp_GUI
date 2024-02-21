@@ -3,7 +3,7 @@ import sys
 
 from PySide6 import QtWidgets
 
-# from PySide6.QtCore import *
+from PySide6.QtCore import QTranslator
 from PySide6.QtGui import QIcon, Qt, QAction, QFont
 from PySide6.QtWidgets import (
     QMessageBox,
@@ -15,9 +15,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QLabel,
     QHBoxLayout,
+    QPushButton,
 )
 
 from app.core.utils import helper_functions
+from app.core.ui import customized_class
 
 # from PySide6.QtGui import QIcon, QFont, QPixmap, QImage
 # from PySide6.QtGui import QCursor, QKeySequence, QFontDatabase
@@ -33,10 +35,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ytdlpMainTab = None
         self.configTab = None
         self.helpTab = None
-        self.setup_ui()
+        self.setupGui()
         self.loadStyleSheet()
 
-    def setup_ui(self):
+    def setupGui(self):
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)
         self.resize(600, 600)
@@ -90,10 +92,10 @@ class SystemTray(QSystemTrayIcon):
         # 添加一级菜单动作选项(还原主窗口)
 
         self.QuitAction = QAction(
-            "退出", self, triggered=self.quit
+            self.tr("退出"), self, triggered=self.quit
         )  # 添加一级菜单动作选项(退出程序)
         self.StyleAction = QAction(
-            "更新主题", self, triggered=mainWindow.loadStyleSheet
+            self.tr("更新主题"), self, triggered=mainWindow.loadStyleSheet
         )  # 添加一级菜单动作选项(更新 QSS)
         self.tray_menu.addAction(self.QuitAction)
         self.tray_menu.addAction(self.StyleAction)
@@ -131,6 +133,7 @@ class SystemTray(QSystemTrayIcon):
 class YtdlpMainTab(QWidget):
     def __init__(self):
         super().__init__()
+        self.download_button = None
         self.download_vbox = None
         self.url_line_edit = None
         self.url_label = None
@@ -141,14 +144,18 @@ class YtdlpMainTab(QWidget):
         # self.initValue()
 
     def setupGui(self):
-        self.download_vbox = QVBoxLayout()
+        self.download_vbox = QHBoxLayout()
         self.url_label = QLabel(self.tr("视频链接："))
-        self.url_line_edit = helper_functions.AutoPasteLineEdit()
+        self.url_line_edit = customized_class.AutoPasteLineEdit()
         self.url_line_edit.setPlaceholderText(self.tr("输入要下载的视频链接"))
         self.url_line_edit.setToolTip(self.tr("输入要下载的视频链接"))
+
+        self.download_button = QPushButton(self.tr("开始下载"))
+        self.download_button.clicked.connect(helper_functions.generateFinalCommand(self))
+
         self.download_vbox.addWidget(self.url_label)
         self.download_vbox.addWidget(self.url_line_edit)
-
+        self.download_vbox.addWidget(self.download_button)
         self.download_vbox_control = QWidget()
         self.download_vbox_control.setLayout(self.download_vbox)
 
