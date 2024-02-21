@@ -1,9 +1,9 @@
 import os
 import sys
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore
 
-from PySide6.QtCore import QTranslator
+from PySide6.QtCore import QTranslator, QDir
 from PySide6.QtGui import QIcon, Qt, QAction, QFont
 from PySide6.QtWidgets import (
     QMessageBox,
@@ -16,13 +16,12 @@ from PySide6.QtWidgets import (
     QLabel,
     QHBoxLayout,
     QPushButton,
+    QFileDialog,
 )
 
 from app.core.utils import helper_functions
 from app.core.ui import customized_class
 
-# from PySide6.QtGui import QIcon, QFont, QPixmap, QImage
-# from PySide6.QtGui import QCursor, QKeySequence, QFontDatabase
 
 styleFile = "./core/ui/resources/stylesheets/style.css"  # 样式表的路径
 finalCommand = ""
@@ -156,9 +155,9 @@ class YtdlpMainTab(QWidget):
             self.url_line_edit.setPlaceholderText(self.tr("输入要下载的视频链接"))
             self.url_line_edit.setToolTip(self.tr("输入要下载的视频链接"))
             self.url_line_edit.setMaxLength(100)
-            self.url_line_edit.textChanged.connect(helper_functions.generateFinalCommand())
+            self.url_line_edit.textChanged.connect(self.generateFinalCommand)
             self.download_button = QPushButton(self.tr("开始下载"))
-            self.download_button.clicked.connect(helper_functions.runFinalCommandButtonClicked())
+            self.download_button.clicked.connect(self.runFinalCommandButtonClicked)
 
             self.download_hbox = QHBoxLayout()
             self.download_hbox.addWidget(self.url_label)
@@ -186,9 +185,9 @@ class YtdlpMainTab(QWidget):
             self.output_path_line_edit = customized_class.DragFileLineEdit()
             self.output_path_line_edit.setPlaceholderText(self.tr("填入下载输出目录"))
             self.output_path_line_edit.setToolTip(self.tr("填入下载输出目录"))
-            self.output_path_line_edit.textChanged.connect(helper_functions.generateFinalCommand())
+            self.output_path_line_edit.textChanged.connect(self.generateFinalCommand)
             self.select_dir_button = QPushButton(self.tr("选择文件夹"))
-            self.select_dir_button.clicked.connect(helper_functions.chooseDirButtonClicked(self))
+            self.select_dir_button.clicked.connect(self.chooseDirButtonClicked)
 
             self.select_dir_hbox = QHBoxLayout()
             self.select_dir_hbox.addWidget(self.output_label)
@@ -201,6 +200,25 @@ class YtdlpMainTab(QWidget):
         self.top_widget_hbox.addWidget(self.download_hbox_control)
         self.top_widget_hbox.addWidget(self.select_dir_hbox_control)
         self.setLayout(self.top_widget_hbox)
+
+    @QtCore.Slot()
+    def generateFinalCommand(self):
+        print("generateFinalCommand")
+        return None
+
+    # 选择文件夹
+    @QtCore.Slot()
+    def chooseDirButtonClicked(self):
+        default_directory = QDir.homePath() + "/videos"
+        folder_path = QFileDialog.getExistingDirectory(self, "选择文件夹", default_directory)
+        if folder_path != "":
+            self.output_path_line_edit.setText(folder_path)
+        return folder_path
+
+    @QtCore.Slot()
+    # 点击运行按钮
+    def runFinalCommandButtonClicked(self):
+        return None
 
 
 class ConfigTab(QWidget):
