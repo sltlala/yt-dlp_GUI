@@ -6,8 +6,8 @@ authors = ["sltlala <sltlala@163.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
-pyside6 = "^6.6.2"
+python = ">=3.10,<3.12"
+PySide6 = "<=6.4.2"
 nuitka = "^2.0.3"
 yt-dlp = "^2023.12.30"
 pre-commit = "^3.6.2"
@@ -23,7 +23,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-# Set the maximum line length to 79.
+# Set the maximum line length to 100.
 line-length = 100
 indent-width = 4
 
