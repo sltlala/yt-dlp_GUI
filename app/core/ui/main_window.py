@@ -4,7 +4,7 @@ import sys
 from PySide6 import QtWidgets, QtCore
 
 from PySide6.QtCore import QTranslator, QDir
-from PySide6.QtGui import QIcon, Qt, QAction, QFont
+from PySide6.QtGui import QIcon, Qt, QAction, QFont, QScreen
 from PySide6.QtWidgets import (
     QMessageBox,
     QTabWidget,
@@ -29,16 +29,17 @@ finalCommand = ""
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__(parent=None)
         self.tabs = None
         self.ytdlpMainTab = None
         self.configTab = None
         self.helpTab = None
         self.setupGui()
         self.loadStyleSheet()
+        self.status = self.statusBar()
 
     def setupGui(self):
-        self.tabs = QTabWidget()
+        self.tabs = QTabWidget(parent=None)
         self.setCentralWidget(self.tabs)
         self.resize(600, 600)
         self.setMinimumSize(500, 500)
@@ -53,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.helpTab, "帮助")
 
         self.setWindowTitle("yt-dlp_GUI")
-        self.setFont(QFont("Microsoft YaHei UI", 10))
+        self.setFont(QFont("Microsoft YaHei UI", 12))
         self.setWindowIcon(QIcon("./core/ui/resources/icons/favicon.ico"))
 
     def loadStyleSheet(self):
@@ -64,11 +65,11 @@ class MainWindow(QtWidgets.QMainWindow):
         except FileNotFoundError:
             QMessageBox.warning(
                 self,
-                "主题载入错误",
-                "未能成功载入主题，请确保软件资源目录有 'style.css' 文件存在。",
+                title="主题载入错误",
+                text="未能成功载入主题，请确保软件资源目录有 'style.css' 文件存在。",
             )
         except UnicodeDecodeError:
-            self.statusBar().showMessage("文件编码错误,请使用UTF8编码", 800)
+            self.status.showMessage("文件编码错误,请使用UTF8编码", 800)
 
 
 """
@@ -76,13 +77,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # 在按下 F5 的时候重载 style.css 主题
         if event.key() == Qt.Key.Key_F5:
             self.loadStyleSheet()
-            self.statusBar().showMessage("已成功更新主题", 800)
+            self.status.showMessage("已成功更新主题", 800)
 """
 
 
 class SystemTray(QSystemTrayIcon):
     def __init__(self, icon, mainWindow):
-        super(SystemTray, self).__init__()
+        super(SystemTray, self).__init__(icon)
         self.window = mainWindow
         self.setIcon(icon)
         self.setParent(mainWindow)
@@ -186,7 +187,7 @@ class YtdlpMainTab(QWidget):
             self.output_path_line_edit.setPlaceholderText(self.tr("填入下载输出目录"))
             self.output_path_line_edit.setToolTip(self.tr("填入下载输出目录"))
             self.output_path_line_edit.textChanged.connect(self.generateFinalCommand)
-            self.select_dir_button = QPushButton(self.tr("选择文件夹"))
+            self.select_dir_button = QPushButton(self.tr("选择目录"))
             self.select_dir_button.clicked.connect(self.chooseDirButtonClicked)
 
             self.select_dir_hbox = QHBoxLayout()

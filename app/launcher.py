@@ -9,7 +9,7 @@ from app.core.ui.main_window import MainWindow, SystemTray
 
 def main():
     # 创建应用程序对象
-    app = QApplication(sys.argv)
+    app = QApplication()
 
     try:
         os.chdir(os.path.dirname(__file__))
