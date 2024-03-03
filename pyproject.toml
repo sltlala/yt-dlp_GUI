@@ -34,7 +34,7 @@ ignore = ["F401"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
-unfixable = ["B"]
+# unfixable = ["B"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

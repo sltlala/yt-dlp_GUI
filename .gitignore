@@ -3,7 +3,6 @@
 *.exe
 __pycache__
 *.log
-*.spec
 *.7z
 *.mp4
 *.mkv
