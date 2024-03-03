@@ -63,9 +63,7 @@ class mainWindow(QtWidgets.QMainWindow):
                 with open(styleFile, "r", encoding="gbk") as style:
                     self.setStyleSheet(style.read())
         except FileNotFoundError:
-            QMessageBox.warning(
-                "主题载入错误", '未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。'
-            )
+            QMessageBox.warning("主题载入错误", '未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。')
 
     def keyPressEvent(self, event) -> None:
         # 在按下 F5 的时候重载 style.css 主题
@@ -84,9 +82,7 @@ class SystemTray(QSystemTrayIcon):
         self.tray_menu = QMenu(QApplication.desktop())  # 创建菜单
         # 添加一级菜单动作选项(还原主窗口)
         # self.RestoreAction = QAction(u'还原 ', self, triggered=self.showWindow)
-        self.QuitAction = QAction(
-            self.tr("退出"), self, triggered=self.quit
-        )  # 添加一级菜单动作选项(退出程序)
+        self.QuitAction = QAction(self.tr("退出"), self, triggered=self.quit)  # 添加一级菜单动作选项(退出程序)
         self.StyleAction = QAction(
             self.tr("更新主题"), self, triggered=mainWindow.loadStyleSheet
         )  # 添加一级菜单动作选项(更新 QSS)

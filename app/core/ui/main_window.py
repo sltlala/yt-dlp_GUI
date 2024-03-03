@@ -89,9 +89,8 @@ class SystemTray(QSystemTrayIcon):
         self.tray_menu = QMenu()  # 创建菜单
         # 添加一级菜单动作选项(还原主窗口)
 
-        self.QuitAction = QAction(
-            self.tr("退出"), self, triggered=self.quit
-        )  # 添加一级菜单动作选项(退出程序)
+        # 添加一级菜单动作选项(退出程序)
+        self.QuitAction = QAction(self.tr("退出"), self, triggered=self.quit)
         self.StyleAction = QAction(
             self.tr("更新主题"), self, triggered=mainWindow.loadStyleSheet
         )  # 添加一级菜单动作选项(更新 QSS)
@@ -180,9 +179,7 @@ class YtdlpMainTab(QWidget):
             self.save_path_box.setEditable(True)
             self.save_path_box.setEditText(self.userVideoPath)
             self.save_path_box.setToolTip(self.tr("填入下载保存目录"))
-            self.save_path_box.addItems(
-                [self.userVideoPath, self.userPath, self.userDownloadPath, self.userDesktopPath]
-            )
+            self.save_path_box.addItems([self.userVideoPath, self.userPath, self.userDownloadPath, self.userDesktopPath])
 
             self.save_path_box.currentTextChanged.connect(self.generateFinalCommand)
             # self.save_path_box.textChanged.connect(self.generateFinalCommand)
