@@ -32,10 +32,6 @@ finalCommand = ""
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__(parent=None)
-        self.tabs = None
-        self.ytdlpMainTab = None
-        self.configTab = None
-        self.helpTab = None
         self.setupGui()
         self.loadStyleSheet()
         self.status = self.statusBar()
@@ -135,19 +131,6 @@ class SystemTray(QSystemTrayIcon):
 class YtdlpMainTab(QWidget):
     def __init__(self):
         super().__init__()
-        self.save_label = None
-        self.select_dir_button = None
-        self.select_dir_hbox = None
-        self.select_dir_hbox_control = None
-        self.save_path_box = None
-        self.output_label = None
-        self.download_button = None
-        self.download_hbox = None
-        self.url_line_edit = None
-        self.url_label = None
-        self.download_hbox_control = None
-        self.top_widget_hbox = None
-        self.main_widget = None
 
         self.userPath = os.path.expanduser("~").replace("\\", "/")
         self.userVideoPath = self.userPath + "/Videos"
@@ -207,7 +190,7 @@ class YtdlpMainTab(QWidget):
             self.select_dir_button.clicked.connect(self.chooseDirButtonClicked)
 
             self.select_dir_hbox = QHBoxLayout()
-            self.select_dir_hbox.addWidget(self.output_label)
+            self.select_dir_hbox.addWidget(self.save_label)
             self.select_dir_hbox.addWidget(self.save_path_box)
             self.select_dir_hbox.addWidget(self.select_dir_button)
             self.select_dir_hbox_control = QWidget()
