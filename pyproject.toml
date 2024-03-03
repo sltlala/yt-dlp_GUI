@@ -4,14 +4,15 @@ version = "0.1.0"
 description = "virtualenvs.create=true"
 authors = ["sltlala <sltlala@163.com>"]
 readme = "README.md"
+license = "GPL-3.0"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
 PySide6 = "<=6.4.2"
 nuitka = "^2.0.3"
-yt-dlp = "^2023.12.30"
+yt-dlp = "^2024.3.2.232720.dev0"
 pre-commit = "^3.6.2"
-ruff = "^0.2.2"
+ruff = "^0.3.0"
 
 [[tool.poetry.source]]
 name = "mirrors"

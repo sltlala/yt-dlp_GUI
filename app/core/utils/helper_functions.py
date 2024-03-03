@@ -74,6 +74,6 @@ def run(self):
 @QtCore.Slot()
 # 如果输入文件是拖进去的
 def lineEditHasDrop(self, path):
-    outputName = os.path.splitext(path)[0] + "_out" + os.path.splitext(path)[1]
-    self.输出路径框.setText(outputName)
+    output_name = os.path.splitext(path)[0] + "_out" + os.path.splitext(path)[1]
+    self.输出路径框.setText(output_name)
     return True
