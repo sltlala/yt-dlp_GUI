@@ -39,11 +39,11 @@ finalCommand = ""
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__(parent=None)
-        self.setupGui()
-        self.loadStyleSheet()
+        self.setup_gui()
+        self.load_style_sheet()
         self.status = self.statusBar()
 
-    def setupGui(self):
+    def setup_gui(self):
         self.tabs = QTabWidget(parent=None)
         self.setCentralWidget(self.tabs)
         self.adjustSize()
@@ -63,7 +63,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setFont(QFont("Microsoft YaHei UI", 10))
         self.setWindowIcon(QIcon("./core/ui/resources/icons/favicon.ico"))
 
-    def loadStyleSheet(self):
+    def load_style_sheet(self):
         global styleFile
         try:
             with open(styleFile, "r", encoding="UTF-8") as style:
@@ -80,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def keyPressEvent(self, event) -> None:
         # 在按下 F5 的时候重载 style.css 主题
         if event.key() == Qt.Key.Key_F5:
-            self.loadStyleSheet()
+            self.load_style_sheet()
             self.status.showMessage("已成功更新主题", 800)
 
 
@@ -97,7 +97,7 @@ class SystemTray(QSystemTrayIcon):
         # 添加一级菜单动作选项(退出程序)
         self.QuitAction = QAction(self.tr("退出"), self, triggered=self.quit)
         self.StyleAction = QAction(
-            self.tr("更新主题"), self, triggered=mainWindow.loadStyleSheet
+            self.tr("更新主题"), self, triggered=mainWindow.load_style_sheet
         )  # 添加一级菜单动作选项(更新 QSS)
         self.tray_menu.addAction(self.QuitAction)
         self.tray_menu.addAction(self.StyleAction)
@@ -323,6 +323,8 @@ class YtdlpMainTab(QWidget):
             self.under_widget = QSplitter(Qt.Vertical)
             self.under_widget.addWidget(self.left_widget)
             self.under_widget.addWidget(self.final_command_widget)
+            self.under_widget.setCollapsible(0, False)
+            self.under_widget.setCollapsible(1, False)
 
             self.top_hbox = QHBoxLayout()
             self.top_hbox.addWidget(self.under_widget)
