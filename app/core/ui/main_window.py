@@ -317,7 +317,7 @@ class YtdlpMainTab(QWidget):
             self.left_widget = QSplitter(Qt.Horizontal)
             self.left_widget.addWidget(self.main_widget)
             self.left_widget.addWidget(self.preset_widget)
-            self.left_widget.setCollapsible(0, False)  # main_widget 是第一个添加的部件，所以索引是 0
+            self.left_widget.setCollapsible(0, False)
             self.left_widget.setCollapsible(1, False)
 
             self.under_widget = QSplitter(Qt.Vertical)
@@ -348,7 +348,9 @@ class YtdlpMainTab(QWidget):
     @QtCore.Slot()
     def choose_file_button_clicked(self):
         default_directory = QDir.homePath()
-        file_path = QFileDialog.getOpenFileName(self, self.tr("选择文件"), default_directory, self.tr("所有文件(*.*)"))
+        file_path = QFileDialog.getOpenFileName(
+            self, self.tr("选择文件"), default_directory, self.tr("所有文件(*.*)")
+        )
         if file_path != "":
             self.set_cookies_edit.addItem(file_path[0])
             self.set_cookies_edit.setCurrentText(file_path[0])
