@@ -167,7 +167,6 @@ class YtdlpMainTab(QWidget):
                 self.download_hbox = QHBoxLayout()
                 self.download_hbox.addWidget(self.url_line_edit, 2)
                 self.download_hbox.addWidget(self.only_download_sub_checkbox, 1)
-                self.download_hbox.setContentsMargins(0, 0, 0, 0)
 
             # 下载选项
             if True:
@@ -198,7 +197,6 @@ class YtdlpMainTab(QWidget):
                 self.select_dir_hbox = QHBoxLayout()
                 self.select_dir_hbox.addWidget(self.save_path_box, 2)
                 self.select_dir_hbox.addWidget(self.select_dir_button, 1)
-                self.select_dir_hbox.setContentsMargins(0, 0, 0, 0)
 
             # 文件命名格式
             if True:
@@ -207,7 +205,6 @@ class YtdlpMainTab(QWidget):
 
                 self.save_name_format_box = QHBoxLayout()
                 self.save_name_format_box.addWidget(self.save_name_format_edit)
-                self.save_name_format_box.setContentsMargins(0, 0, 0, 0)
 
             # 下载格式id
             if True:
@@ -221,7 +218,6 @@ class YtdlpMainTab(QWidget):
                 self.download_format_hbox = QHBoxLayout()
                 self.download_format_hbox.addWidget(self.download_format_edit, 2)
                 self.download_format_hbox.addWidget(self.check_info_button, 1)
-                self.download_format_hbox.setContentsMargins(0, 0, 0, 0)
 
             # 设置Cookies
             if True:
@@ -238,7 +234,6 @@ class YtdlpMainTab(QWidget):
                 self.set_cookies_hbox = QHBoxLayout()
                 self.set_cookies_hbox.addWidget(self.set_cookies_edit, 2)
                 self.set_cookies_hbox.addWidget(self.set_cookies_button, 1)
-                self.set_cookies_hbox.setContentsMargins(0, 0, 0, 0)
 
             # 输出选项
             if True:
@@ -251,7 +246,6 @@ class YtdlpMainTab(QWidget):
 
                 self.output_options_hbox = QHBoxLayout()
                 self.output_options_hbox.addWidget(self.output_options_edit)
-                self.output_options_hbox.setContentsMargins(0, 0, 0, 0)
 
             # self.main_hbox = QVBoxLayout()
             # self.main_hbox.addLayout(self.download_hbox)
@@ -343,7 +337,9 @@ class YtdlpMainTab(QWidget):
     @QtCore.Slot()
     def choose_dir_button_clicked(self):
         default_directory = QDir.homePath() + "/videos"
-        folder_path = QFileDialog.getExistingDirectory(self, "选择文件夹", default_directory)
+        folder_path = QFileDialog.getExistingDirectory(
+            self, self.tr("选择文件夹"), default_directory, self.tr("所有文件(*.*)")
+        )
         if folder_path != "":
             self.save_path_box.setEditText(folder_path)
         return folder_path
@@ -352,9 +348,10 @@ class YtdlpMainTab(QWidget):
     @QtCore.Slot()
     def choose_file_button_clicked(self):
         default_directory = QDir.homePath()
-        file_path = QFileDialog.getOpenFileName(self, "选择文件", default_directory, "文本文件(*.txt)")
+        file_path = QFileDialog.getOpenFileName(self, self.tr("选择文件"), default_directory, self.tr("所有文件(*.*)"))
         if file_path != "":
-            self.set_cookies_edit.setEditText(file_path)
+            self.set_cookies_edit.addItem(file_path[0])
+            self.set_cookies_edit.setCurrentText(file_path[0])
         return file_path
 
     @QtCore.Slot()
