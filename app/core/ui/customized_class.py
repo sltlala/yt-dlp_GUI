@@ -1,6 +1,8 @@
+import os
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QLineEdit, QMenu, QApplication
+from PySide6.QtWidgets import QLineEdit, QMenu, QApplication, QComboBox, QSizePolicy
 
 
 # 自动粘贴单行文本框
@@ -10,10 +12,10 @@ class AutoPasteLineEdit(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.showContextMenu)
+        self.customContextMenuRequested.connect(self.show_context_menu)
 
     # 设置右键选项
-    def showContextMenu(self, pos):
+    def show_context_menu(self, pos):
         context_menu = QMenu(self)
 
         # 添加粘贴动作
@@ -55,3 +57,33 @@ class DragFileLineEdit(QLineEdit):
             event.accept()
         else:
             event.ignore()
+
+
+class SavePathComboBox(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.userPath = os.path.expanduser("~").replace("\\", "/")
+        self.userVideoPath = self.userPath + "/Videos"
+        self.userDownloadPath = self.userPath + "/Downloads"
+        self.userDesktopPath = self.userPath + "/Desktop"
+        self.setup()
+
+    def setup(self):
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setEditable(True)
+        self.setEditText(self.userVideoPath)
+        self.addItems([self.userVideoPath, self.userPath, self.userDownloadPath, self.userDesktopPath])
+
+
+class SaveNameFormatComboBox(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setup()
+
+    def setup(self):
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setEditable(False)
+        # self.setEditText("%(title)s.%(ext)s")
+        self.addItems(
+            ["%(title)s.%(ext)s", "%(id)s.%(ext)s", "%(uploader)s - %(title)s.%(ext)s", "%(uploader)s/%(title)s.%(ext)s"]
+        )
