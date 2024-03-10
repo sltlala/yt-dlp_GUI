@@ -4,7 +4,7 @@ import sys
 from PySide6 import QtWidgets, QtCore
 
 from PySide6.QtCore import QTranslator, QDir, Qt, QSize
-from PySide6.QtGui import QIcon, QAction, QFont, QScreen
+from PySide6.QtGui import QIcon, QAction, QFont, QScreen, QGuiApplication
 from PySide6.QtWidgets import (
     QMessageBox,
     QTabWidget,
@@ -33,6 +33,7 @@ from app.core.ui import customized_class
 
 
 styleFile = "./core/ui/resources/stylesheets/style.css"  # 样式表的路径
+presetTableName = "commandPreset"
 finalCommand = ""
 
 
@@ -40,14 +41,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__(parent=None)
         self.setup_gui()
-        self.load_style_sheet()
         self.status = self.statusBar()
+        self.load_style_sheet()
 
     def setup_gui(self):
         self.tabs = QTabWidget(parent=None)
         self.setCentralWidget(self.tabs)
         self.adjustSize()
         self.resize(700, 600)
+        screen = QGuiApplication.primaryScreen().geometry()
+        self.move(screen.width() / 2 - self.width() / 2, screen.height() / 2 - self.height() / 2)
         # self.setMinimumSize(500, 500)
         # self.setMaximumSize(750, 600)
 
@@ -56,32 +59,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.helpTab = HelpTab()  # 帮助界面
 
         self.tabs.addTab(self.ytdlpMainTab, "yt-dlp")
-        self.tabs.addTab(self.configTab, "设置")
-        self.tabs.addTab(self.helpTab, "帮助")
+        self.tabs.addTab(self.configTab, self.tr("设置"))
+        self.tabs.addTab(self.helpTab, self.tr("帮助"))
 
         self.setWindowTitle("yt-dlp_GUI")
         self.setFont(QFont("Microsoft YaHei UI", 10))
         self.setWindowIcon(QIcon("./core/ui/resources/icons/favicon.ico"))
 
-    def load_style_sheet(self):
+    def load_style_sheet(self) -> None:
         global styleFile
         try:
             with open(styleFile, "r", encoding="UTF-8") as style:
                 self.setStyleSheet(style.read())
+                self.status.showMessage(self.tr("已成功更新主题"), 800)
         except FileNotFoundError:
             QMessageBox.warning(
                 self,
-                title="主题载入错误",
-                text="未能成功载入主题，请确保软件资源目录有 'style.css' 文件存在。",
+                self.tr("主题载入错误"),
+                self.tr("未能成功载入主题，请确保软件资源目录有 'style.css' 文件存在。"),
             )
         except UnicodeDecodeError:
-            self.status.showMessage("文件编码错误,请使用UTF8编码", 800)
+            self.status.showMessage(self.tr("文件编码错误,请使用UTF8编码"), 800)
 
     def keyPressEvent(self, event) -> None:
         # 在按下 F5 的时候重载 style.css 主题
         if event.key() == Qt.Key.Key_F5:
             self.load_style_sheet()
-            self.status.showMessage("已成功更新主题", 800)
 
 
 class SystemTray(QSystemTrayIcon):
@@ -170,19 +173,6 @@ class YtdlpMainTab(QWidget):
 
             # 下载选项
             if True:
-                # TODO：{
-                #  --format ba+bv,b*
-                #  --output -o '%(channel)s/%(title)s.%(ext)s'
-                #  --merge-output-format MP4,MKV
-                #  --cookies-from-browser chrome,edge,firefox
-                #  --downloader
-                #  --downloader-args aria2c:'-x 16 -k 1M'
-                #  --download-dir D:/
-                #  --paths
-                #  --download-archive './%(channel)s/archive.txt'
-                #  --proxy  http://127.0.0.1:3030/
-                #  }
-
                 # 保存路径选择框
                 self.save_label = QLabel(self.tr("保存路径："))
                 self.save_path_box = customized_class.SavePathComboBox()
@@ -202,6 +192,7 @@ class YtdlpMainTab(QWidget):
             if True:
                 self.save_name_format_label = QLabel(self.tr("文件命名格式："))
                 self.save_name_format_edit = customized_class.SaveNameFormatComboBox()
+                self.save_name_format_edit.currentTextChanged.connect(self.generate_final_command)
 
                 self.save_name_format_box = QHBoxLayout()
                 self.save_name_format_box.addWidget(self.save_name_format_edit)
@@ -225,8 +216,8 @@ class YtdlpMainTab(QWidget):
                 self.set_cookies_edit = QComboBox()
                 self.set_cookies_edit.setEditable(True)
                 self.set_cookies_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                # self.set_cookies_edit.setEditText("edge")
                 self.set_cookies_edit.addItems(["edge", "chrome", "firefox"])
+                self.set_cookies_edit.currentTextChanged.connect(self.generate_final_command)
 
                 self.set_cookies_button = QPushButton(self.tr("选择文件"))
                 self.set_cookies_button.clicked.connect(self.choose_file_button_clicked)
@@ -247,22 +238,20 @@ class YtdlpMainTab(QWidget):
                 self.output_options_hbox = QHBoxLayout()
                 self.output_options_hbox.addWidget(self.output_options_edit)
 
-            # self.main_hbox = QVBoxLayout()
-            # self.main_hbox.addLayout(self.download_hbox)
-            # self.main_hbox.addSpacing(20)
-            # self.main_hbox.addLayout(self.select_dir_hbox)
-            # self.main_hbox.addSpacing(20)
-            # self.main_hbox.addLayout(self.output_options_hbox)
+            self.download_button = QPushButton(self.tr("开始下载"))
+            self.download_button.clicked.connect(self.run_final_command_button_clicked)
+
             self.main_formlayout = QFormLayout()
             self.main_formlayout.addRow(self.url_label, self.download_hbox)
             self.main_formlayout.addRow(self.save_label, self.select_dir_hbox)
             self.main_formlayout.addRow(self.save_name_format_label, self.save_name_format_box)
             self.main_formlayout.addRow(self.download_format_label, self.download_format_hbox)
             self.main_formlayout.addRow(self.set_cookies_label, self.set_cookies_hbox)
+            self.main_formlayout.addRow(None, self.download_button)
             self.main_formlayout.addRow(self.output_label, self.output_options_hbox)
 
             self.main_widget = QWidget()
-            self.main_widget.setMinimumSize(350, 300)
+            self.main_widget.setMinimumSize(450, 300)
             self.main_widget.setLayout(self.main_formlayout)
 
         # 预设列表
@@ -288,7 +277,7 @@ class YtdlpMainTab(QWidget):
             self.preset_vbox.addWidget(self.view_preset_help, 4, 0, 1, 2)
 
             self.preset_widget = QWidget()
-            self.preset_widget.setMinimumSize(200, 300)
+            self.preset_widget.setMinimumSize(200, 350)
             self.preset_widget.setLayout(self.preset_vbox)
 
             self.up_preset_button.clicked.connect(self.upward_button_clicked)
@@ -350,9 +339,7 @@ class YtdlpMainTab(QWidget):
     @QtCore.Slot()
     def choose_file_button_clicked(self):
         default_directory = QDir.homePath()
-        file_path = QFileDialog.getOpenFileName(
-            self, self.tr("选择文件"), default_directory, self.tr("所有文件(*.*)")
-        )
+        file_path = QFileDialog.getOpenFileName(self, self.tr("选择文件"), default_directory, self.tr("所有文件(*.*)"))
         if file_path != "":
             self.set_cookies_edit.addItem(file_path[0])
             self.set_cookies_edit.setCurrentText(file_path[0])
@@ -394,6 +381,7 @@ class YtdlpMainTab(QWidget):
 
     @QtCore.Slot()
     def check_info_button_clicked(self):
+        print("checkInfoButtonClicked")
         return None
 
 
@@ -405,6 +393,16 @@ class ConfigTab(QWidget):
         # self.initValue()
 
     def setup_gui(self):
+        # TODO：{
+        #  --format ba+bv,b*
+        #  --merge-output-format MP4,MKV
+        #  --downloader
+        #  --downloader-args aria2c:'-x 16 -k 1M'
+        #  --download-dir D:/
+        #  --paths
+        #  --download-archive './%(channel)s/archive.txt'
+        #  --proxy  http://127.0.0.1:3030/
+        #  }
         self.config_vbox = QVBoxLayout()
 
 
