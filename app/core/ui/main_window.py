@@ -3,7 +3,7 @@ import sys
 
 from PySide6 import QtWidgets, QtCore
 
-from PySide6.QtCore import QTranslator, QDir, Qt, QSize
+from PySide6.QtCore import QTranslator, QDir, Qt
 from PySide6.QtGui import QIcon, QAction, QFont, QScreen, QGuiApplication
 from PySide6.QtWidgets import (
     QMessageBox,
@@ -88,11 +88,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 class SystemTray(QSystemTrayIcon):
-    def __init__(self, icon, mainWindow):
+    def __init__(self, icon, main_window):
         super(SystemTray, self).__init__(icon)
-        self.window = mainWindow
+        self.window = main_window
         self.setIcon(icon)
-        self.setParent(mainWindow)
+        self.setParent(main_window)
         self.activated.connect(self.tray_event)  # 设置托盘点击事件处理函数
         self.tray_menu = QMenu()  # 创建菜单
         # 添加一级菜单动作选项(还原主窗口)
@@ -100,7 +100,7 @@ class SystemTray(QSystemTrayIcon):
         # 添加一级菜单动作选项(退出程序)
         self.QuitAction = QAction(self.tr("退出"), self, triggered=self.quit)
         self.StyleAction = QAction(
-            self.tr("更新主题"), self, triggered=mainWindow.load_style_sheet
+            self.tr("更新主题"), self, triggered=main_window.load_style_sheet
         )  # 添加一级菜单动作选项(更新 QSS)
         self.tray_menu.addAction(self.QuitAction)
         self.tray_menu.addAction(self.StyleAction)
@@ -214,9 +214,8 @@ class YtdlpMainTab(QWidget):
             if True:
                 self.set_cookies_label = QLabel(self.tr("设置Cookies："))
                 self.set_cookies_edit = QComboBox()
-                self.set_cookies_edit.setEditable(True)
                 self.set_cookies_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                self.set_cookies_edit.addItems(["edge", "chrome", "firefox"])
+                self.set_cookies_edit.addItems(["", "edge", "chrome", "firefox"])
                 self.set_cookies_edit.currentTextChanged.connect(self.generate_final_command)
 
                 self.set_cookies_button = QPushButton(self.tr("选择文件"))
@@ -225,6 +224,21 @@ class YtdlpMainTab(QWidget):
                 self.set_cookies_hbox = QHBoxLayout()
                 self.set_cookies_hbox.addWidget(self.set_cookies_edit, 2)
                 self.set_cookies_hbox.addWidget(self.set_cookies_button, 1)
+
+            # 输出格式和封面元数据
+            if True:
+                self.output_format_label = QLabel(self.tr("输出格式："))
+                self.output_format_edit = QComboBox()
+                self.output_format_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                self.output_format_edit.addItems(["mp4", "mkv", "flv", "webm", "mp3", "m4a", "flac", "wav"])
+                self.output_format_edit.currentTextChanged.connect(self.generate_final_command)
+
+                self.embed_thumbnail_checkbox = QCheckBox(self.tr("封面-元数据"))
+                self.embed_thumbnail_checkbox.stateChanged.connect(self.generate_final_command)
+
+                self.output_format_hbox = QHBoxLayout()
+                self.output_format_hbox.addWidget(self.output_format_edit, 2)
+                self.output_format_hbox.addWidget(self.embed_thumbnail_checkbox, 1)
 
             # 输出选项
             if True:
@@ -248,6 +262,7 @@ class YtdlpMainTab(QWidget):
             self.main_formlayout.addRow(self.download_format_label, self.download_format_hbox)
             self.main_formlayout.addRow(self.set_cookies_label, self.set_cookies_hbox)
             self.main_formlayout.addRow(None, self.download_button)
+            self.main_formlayout.addRow(self.output_format_label, self.output_format_hbox)
             self.main_formlayout.addRow(self.output_label, self.output_options_hbox)
 
             self.main_widget = QWidget()
