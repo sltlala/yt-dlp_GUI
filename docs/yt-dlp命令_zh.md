@@ -1,107 +1,68 @@
-# USAGE AND OPTIONS
+# 使用和选项
 
 <!-- MANPAGE: BEGIN EXCLUDED SECTION -->
     yt-dlp [OPTIONS] [--] URL [URL...]
 
-`Ctrl+F` is your friend :D
+`Ctrl+F` 是你的朋友 :D
 <!-- MANPAGE: END EXCLUDED SECTION -->
 
 <!-- Auto generated -->
-## General Options:
-    -h, --help                      Print this help text and exit
-    --version                       Print program version and exit
-    -U, --update                    Update this program to the latest version
-    --no-update                     Do not check for updates (default)
-    --update-to [CHANNEL]@[TAG]     Upgrade/downgrade to a specific version.
-                                    CHANNEL can be a repository as well. CHANNEL
-                                    and TAG default to "stable" and "latest"
-                                    respectively if omitted; See "UPDATE" for
-                                    details. Supported channels: stable,
+## 一般选项：
+    -h, --help                      打印此帮助文本并退出
+    --version                       打印程序版本并退出
+    -U, --update                    将此程序更新到最新版本
+    --no-update                     不检查更新（默认）
+    --update-to [CHANNEL]@[TAG]     升级/降级到特定版本。
+                                    CHANNEL 也可以是一个存储库。CHANNEL
+                                    和 TAG 的默认值分别为 "稳定 "和 "最新"。
+                                    分别默认为 "稳定 "和 "最新"。
+                                    详情请参阅 "UPDATE"。支持的通道： stable、
                                     nightly, master
-    -i, --ignore-errors             Ignore download and postprocessing errors.
-                                    The download will be considered successful
-                                    even if the postprocessing fails
-    --no-abort-on-error             Continue with next video on download errors;
-                                    e.g. to skip unavailable videos in a
-                                    playlist (default)
-    --abort-on-error                Abort downloading of further videos if an
-                                    error occurs (Alias: --no-ignore-errors)
-    --dump-user-agent               Display the current user-agent and exit
-    --list-extractors               List all supported extractors and exit
-    --extractor-descriptions        Output descriptions of all supported
-                                    extractors and exit
-    --use-extractors NAMES          Extractor names to use separated by commas.
-                                    You can also use regexes, "all", "default"
-                                    and "end" (end URL matching); e.g. --ies
-                                    "holodex.*,end,youtube". Prefix the name
-                                    with a "-" to exclude it, e.g. --ies
-                                    default,-generic. Use --list-extractors for
-                                    a list of extractor names. (Alias: --ies)
-    --default-search PREFIX         Use this prefix for unqualified URLs. E.g.
-                                    "gvsearch2:python" downloads two videos from
-                                    google videos for the search term "python".
-                                    Use the value "auto" to let yt-dlp guess
-                                    ("auto_warning" to emit a warning when
-                                    guessing). "error" just throws an error. The
-                                    default value "fixup_error" repairs broken
-                                    URLs, but emits an error if this is not
-                                    possible instead of searching
-    --ignore-config                 Don't load any more configuration files
-                                    except those given by --config-locations.
-                                    For backward compatibility, if this option
-                                    is found inside the system configuration
-                                    file, the user configuration is not loaded.
+    -i, --ignore-errors             忽略下载和后处理错误。
+                                    下载将被视为成功，即使后处理失败
+    --no-abort-on-error             下载错误的情况下，继续下载下一个视频
+                                    例如，跳过播放列表中不可用的视频（默认值）
+    --abort-on-error                如果出现错误，则中止下载其他视频（别名：--no-ignore-errors）
+    --dump-user-agent               显示当前用户代理并退出
+    --list-extractors               列出所有支持的提取器并退出
+    --extractor-descriptions        输出所有支持的提取器的说明并退出
+    --use-extractors NAMES          用逗号分隔的提取器名称
+                                    您还可以使用 "all"、"default"和 "end"（结束 URL 匹配）等正则表达式；
+                                    例如. --ies "holodex.*,end,youtube".
+                                    在名称前加上“-”以排除它，例如. --ies default,-generic.
+                                    使用 --list-extractors 获取提取器名称列表。(Alias: --ies)
+    --default-search PREFIX         将此前缀用于非限定的 URL.
+                                    例如."gvsearch2:python" 从Google视频中下载两个搜索词“python”的视频。
+                                    使用值 “auto” 让 yt-dlp 猜测（“auto_warning”在猜测时发出警告）
+                                    “error”只是抛出一个错误. 默认值“fixup_error”用于修复损坏的 URL，
+                                    但如果无法修复，则会发出错误，而不是搜索.
+    --ignore-config                 除了 --config-locations 给出的配置文件外，不要再加载任何配置文件。
+                                    为了向后兼容，如果在系统配置文件中找到此选项，则不会加载用户配置。
                                     (Alias: --no-config)
-    --no-config-locations           Do not load any custom configuration files
-                                    (default). When given inside a configuration
-                                    file, ignore all previous --config-locations
-                                    defined in the current file
-    --config-locations PATH         Location of the main configuration file;
-                                    either the path to the config or its
-                                    containing directory ("-" for stdin). Can be
-                                    used multiple times and inside other
-                                    configuration files
-    --flat-playlist                 Do not extract the videos of a playlist,
-                                    only list them
-    --no-flat-playlist              Fully extract the videos of a playlist
-                                    (default)
-    --live-from-start               Download livestreams from the start.
-                                    Currently only supported for YouTube
-                                    (Experimental)
-    --no-live-from-start            Download livestreams from the current time
-                                    (default)
-    --wait-for-video MIN[-MAX]      Wait for scheduled streams to become
-                                    available. Pass the minimum number of
-                                    seconds (or range) to wait between retries
-    --no-wait-for-video             Do not wait for scheduled streams (default)
-    --mark-watched                  Mark videos watched (even with --simulate)
-    --no-mark-watched               Do not mark videos watched (default)
-    --color [STREAM:]POLICY         Whether to emit color codes in output,
-                                    optionally prefixed by the STREAM (stdout or
-                                    stderr) to apply the setting to. Can be one
-                                    of "always", "auto" (default), "never", or
-                                    "no_color" (use non color terminal
-                                    sequences). Can be used multiple times
-    --compat-options OPTS           Options that can help keep compatibility
-                                    with youtube-dl or youtube-dlc
-                                    configurations by reverting some of the
-                                    changes made in yt-dlp. See "Differences in
-                                    default behavior" for details
-    --alias ALIASES OPTIONS         Create aliases for an option string. Unless
-                                    an alias starts with a dash "-", it is
-                                    prefixed with "--". Arguments are parsed
-                                    according to the Python string formatting
-                                    mini-language. E.g. --alias get-audio,-X
-                                    "-S=aext:{0},abr -x --audio-format {0}"
-                                    creates options "--get-audio" and "-X" that
-                                    takes an argument (ARG0) and expands to
-                                    "-S=aext:ARG0,abr -x --audio-format ARG0".
-                                    All defined aliases are listed in the --help
-                                    output. Alias options can trigger more
-                                    aliases; so be careful to avoid defining
-                                    recursive options. As a safety measure, each
-                                    alias may be triggered a maximum of 100
-                                    times. This option can be used multiple times
+    --no-config-locations           不要加载任何自定义配置文件(默认).
+                                    在配置文件中给出时，请忽略当前文件中定义的所有先前的 --config-locations
+    --config-locations PATH         主配置文件的位置;配置或其包含目录的路径(“-”表示stdin).
+                                    可以多次使用，也可以在其他配置文件中使用
+    --flat-playlist                 不要提取播放列表的视频，只列出它们
+    --no-flat-playlist              完全提取播放列表的视频（默认）
+    --live-from-start               从直播开始时下载。目前仅支持 YouTube（实验性）
+    --no-live-from-start            从当前时间下载直播（默认）
+    --wait-for-video MIN[-MAX]      在等待计划的流可用时，丢弃在重试之间等待的最小秒数（或范围）
+    --no-wait-for-video             不要等待计划总的流（默认）
+    --mark-watched                  标记观看的视频（即使使用 --simulate）
+    --no-mark-watched               不标记观看的视频（默认）
+    --color [STREAM:]POLICY         是否在输出中发出颜色代码，可以选择以STREAM(stdout或stderr)为前缀以应用设置
+                                    可以是“always”,“auto”(默认),“never”或“no_color”(使用非彩色终端序列)之一,可多次使用
+    --compat-options OPTS           这些选项可以通过恢复 yt-dlp 中所做的一些更改来帮助
+                                    保持与 youtube-dl 或 youtube-dlc 配置的兼容性
+                                    有关详细信息，请参阅“默认行为的差异”(Differences in default behavior)
+    --alias ALIASES OPTIONS         为选项字符串创建别名。除非别名以短划线“-”开头，否则它以“--”为前缀。
+                                    参数根据 Python 字符串格式迷你语言进行解析。
+                                    例如. --alias get-audio,-X "-S=aext:{0},abr -x --audio-format {0}"
+                                    创建选项“--get-audio”和“-X”，它们接受参数 （ARG0）
+                                    并扩展为“-S=aext：ARG0，abr -x --audio-format ARG0”。
+                                    所有已定义的别名都会在--help输出中列出。别名选项可以触发更多别名，因此要注意避免定义递归选项。
+                                    作为一项安全措施，每个别名最多可触发 100 次。该选项可多次使用
 
 ## Network Options:
     --proxy URL                     Use the specified HTTP/HTTPS/SOCKS proxy. To
