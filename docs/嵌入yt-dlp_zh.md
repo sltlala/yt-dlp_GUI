@@ -15,7 +15,7 @@ with YoutubeDL() as ydl:
     ydl.download(URLS)
 ```
 
-大多数情况下，你需要使用各种选项。有关可用选项的列表，请参阅 [`yt_dlp/YoutubeDL.py`](yt_dlp/YoutubeDL.py#L183) 或 Python shell 中的 `help(yt_dlp.YoutubeDL)` 。
+大多数情况下，你需要使用各种选项。有关可用选项的列表，请参阅 [`yt_dlp/YoutubeDL.py`](https://github.com/yt-dlp/yt-dlp/tree/master/yt_dlp/YoutubeDL.py#L183) 或 Python shell 中的 `help(yt_dlp.YoutubeDL)` 。
 如果你已经熟悉 CLI，可以使用 [`devscripts/cli_too_api.py`](https://github.com/yt-dlp/yt-dlp/blob/master/devscripts/cli_to_api.py) 将任何 CLI 开关转换为 `YoutubeDL` 参数。
 
 **提示**: 如果您要将代码从 youtube-dl 移植到 yt-dlp，需要注意的一个要点是，我们并不保证 `YoutubeDL.extract_info` 的返回值是 json 序列化的，或者甚至是一个字典。
