@@ -28,13 +28,16 @@ from PySide6.QtWidgets import (
     QFormLayout,
 )
 
+
 from app.core.utils import helper_functions
 from app.core.ui import customized_class
-
+from app.core import database
 
 styleFile = "./core/ui/resources/stylesheets/style.css"  # 样式表的路径
 presetTableName = "commandPreset"
 finalCommand = ""
+
+db = database.Database()
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -148,7 +151,13 @@ class YtdlpMainTab(QWidget):
         self.url_label = None
 
         self.setup_gui()
-        # self.initValue()
+        self.init_value()
+
+    def init_value(self):
+        # 检查数据库是否存在
+        db.create_present_table()
+        # 刷新预设列表
+        self.refresh_list()
 
     def setup_gui(self):
         # 下载链接输入和输出选项
@@ -334,6 +343,17 @@ class YtdlpMainTab(QWidget):
             self.top_hbox.addWidget(self.under_widget)
             self.setLayout(self.top_hbox)
 
+    # 将数据库的预设填入列表（更新列表）
+    def refresh_list(self):
+        # 改用主数据库
+        cursor = db.cursor
+        preset_data = cursor.execute("select id, name, outputOption from %s order by id" % (presetTableName))
+        self.preset_list.clear()
+        for i in preset_data:
+            self.preset_list.addItem(i[1])
+        # 不在这里关数据库了()
+        pass
+
     @QtCore.Slot()
     def generate_final_command(self):
         print("generateFinalCommand")
@@ -430,10 +450,3 @@ class HelpTab(QWidget):
 
     def setup_gui(self):
         self.help_vbox = QVBoxLayout()
-
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())

@@ -6,6 +6,8 @@ from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import QApplication
 from app.core.ui.main_window import MainWindow, SystemTray
 
+from app.core.database import Database
+
 
 def main():
     # 创建应用程序对象

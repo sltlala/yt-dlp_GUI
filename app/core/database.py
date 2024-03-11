@@ -4,7 +4,8 @@ presetTableName = "commandPreset"
 
 
 class Database:
-    def __init__(self, db_name):
+    def __init__(self):
+        db_name = "./database.db"
         self.db_name = db_name
         self.connection = sqlite3.connect(db_name)
         self.cursor = self.connection.cursor()
@@ -20,6 +21,10 @@ class Database:
         self.cursor.execute(query, values)
         return self.cursor.fetchall()
 
+    # 关闭连接
+    def close(self):
+        self.connection.close()
+
     def create_present_table(self):
         cursor = self.connection.cursor()
         result = cursor.execute('select * from sqlite_master where name = "%s";' % presetTableName)
@@ -29,11 +34,7 @@ class Database:
                 """create table %s (
                             id integer primary key autoincrement,
                             name text,
-                            inputOneOption TEXT,
-                            inputTwoOption TEXT,
-                            outputExt TEXT,
                             outputOption TEXT,
-                            extraCode TEXT,
                             description TEXT
                             )"""
                 % (presetTableName)
@@ -41,20 +42,20 @@ class Database:
 
             # 新建一个空预设
             # 不使用预设
-            presetName = self.tr("不使用预设")
+            presetName = "不使用预设"
             cursor.execute(
                 """
                             insert into %s
                             (name, outputOption)
                             values (
                             '%s',
-                            '-c copy'
+                            ''
                             );"""
                 % (presetTableName, presetName)
             )
 
             # 中日英字幕
-            presetName = self.tr("中日英字幕")
+            presetName = "中日英字幕"
             description = ""
             cursor.execute(
                 """
@@ -69,7 +70,7 @@ class Database:
             )
 
             # 中文,英语,日语字幕 vtt-->srt
-            presetName = self.tr("中日英字幕 vtt-->srt")
+            presetName = "中日英字幕 vtt-->srt"
             description = ""
             cursor.execute(
                 """
@@ -82,3 +83,9 @@ class Database:
                             );"""
                 % (presetTableName, presetName, description)
             )
+
+        else:
+            print('存储"预设"的表单已存在')
+
+        self.connection.commit()
+        return True
