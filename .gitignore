@@ -6,6 +6,7 @@ __pycache__
 *.7z
 *.mp4
 *.mkv
+*.webm
 *.wav
 *.sqlite
 .DS_Store
