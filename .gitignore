@@ -18,3 +18,4 @@ venv
 test.py
 README.html
 .history
+/test/
