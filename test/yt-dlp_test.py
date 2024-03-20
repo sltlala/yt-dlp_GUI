@@ -35,11 +35,11 @@ def my_hook(d):
 
 
 ydl_opts = {
-    "format": "bestaudio/best",
+    "format": "bestvideo+bestaudio/best",
     "postprocessors": [
         {
             "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
+            "preferredcodec": "mp4",
             "preferredquality": "192",
         }
     ],
