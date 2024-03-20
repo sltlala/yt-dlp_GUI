@@ -4,19 +4,25 @@ import subprocess
 
 from PySide6.QtCore import QThread, Signal
 
+from app.core.ui import main_window
+from app.core.ui.subwindow import Console
+
+global subprocessStartUpInfo
+
 
 class CommandThread(QThread):
     signal = Signal(str)
     signalForFFmpeg = Signal(str)
 
     output = None  # 用于显示输出的控件，如一个 QEditBox，它需要有自定义的 print 方法。
-
-    outputTwo = None
-
     command = None
 
     def __init__(self, parent=None):
         super(CommandThread, self).__init__(parent)
+        global subprocessStartUpInfo
+        subprocessStartUpInfo = subprocess.STARTUPINFO()
+        subprocessStartUpInfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+        subprocessStartUpInfo.wShowWindow = subprocess.SW_HIDE
 
     def print(self, text):
         self.signal.emit(text)
@@ -24,7 +30,7 @@ class CommandThread(QThread):
     def printForFFmpeg(self, text):
         self.signalForFFmpeg.emit(text)
 
-    def run(self, subprocessStartUpInfo=None):
+    def run(self):
         self.print(self.tr("开始执行命令\n"))
         try:
             # command = self.command.encode('gbk').decode('gbk')
@@ -34,14 +40,6 @@ class CommandThread(QThread):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 startupinfo=subprocessStartUpInfo,
-            )
-
-            self.process = subprocess.Popen(
-                self.command,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                start_new_session=True,
             )
         except subprocess.CalledProcessError:
             self.print(self.tr("出错了，本次运行的命令是：\n\n%s") % self.command)
@@ -58,6 +56,28 @@ class CommandThread(QThread):
         except AttributeError:
             self.print(self.tr("出错了，本次运行的命令是：\n\n%s") % self.command)
         self.print(self.tr("\n命令执行完毕\n"))
+
+
+# 执行命令
+def execute(command):
+    # 判断一下系统，如果是windows系统，就直接将命令在命令行窗口中运行，避免在程序中运行时候的卡顿。
+    # system = platform.system()
+    # if system == 'Windows':
+    #     os.system('start cmd /k ' + command)
+    # else:
+    #     console = Console(mainWindow)
+    #     console.runCommand(command)
+
+    # 新方法，执行子进程，在新窗口输出
+    thread = CommandThread()  # 新建一个子进程
+    thread.command = command  # 将要执行的命令赋予子进程
+    window = Console(main_window)  # 显示一个新窗口，用于显示子进程的输出
+    output = window.consoleBox  # 获得新窗口中的输出控件
+    outputForFFmpeg = window.consoleBoxForFFmpeg
+    thread.signal.connect(output.print)  # 将 子进程中的输出信号 连接到 新窗口输出控件的输出槽
+    thread.signalForFFmpeg.connect(outputForFFmpeg.print)  # 将 子进程中的输出信号 连接到 新窗口输出控件的输出槽
+    window.thread = thread  # 把这里的剪辑子进程赋值给新窗口，这样新窗口就可以在关闭的时候也把进程退出
+    thread.start()
 
 
 class _BufferedReaderForFFmpeg(io.BufferedReader):
@@ -94,15 +114,11 @@ class _BufferedReaderForFFmpeg(io.BufferedReader):
             if not b:
                 break
             res += b
-            if os.linesep == "\r\n":
-                # Windows
-                if res.endswith(b"\r"):
-                    if self.peek(1).startswith(b"\n"):
-                        # \r\n encountered
-                        res += self.read(1)
-                    break
-            else:
-                # Unix
-                if res.endswith(b"\r") or res.endswith(b"\n"):
-                    break
+            # Windows
+            if res.endswith(b"\r"):
+                if self.peek(1).startswith(b"\n"):
+                    # \r\n encountered
+                    res += self.read(1)
+                break
+
         return bytes(res)
