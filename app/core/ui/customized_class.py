@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QSizePolicy,
     QTextEdit,
+    QMessageBox,
 )
 
 from app.core import database
@@ -121,3 +122,16 @@ class OutputBox(QTextEdit):
             self.ensureCursorVisible()
         except AttributeError:
             pass
+
+
+# 错误提示框
+class ErrorMessageBox(QMessageBox):
+    def __init__(self, message_text=None):
+        super().__init__()
+        self.setWindowTitle("错误")
+        self.setIcon(QMessageBox.Critical)
+        self.setStandardButtons(QMessageBox.Ok)
+        self.setText(message_text)
+        # 确认按钮点击后关闭
+        self.buttonClicked.connect(self.close)
+        self.exec_()

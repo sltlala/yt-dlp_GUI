@@ -259,19 +259,12 @@
                                     with "#", ";" or "]" are considered as
                                     comments and ignored
     --no-batch-file                 Do not read URLs from batch file (default)
-    -P, --paths [TYPES:]PATH        The paths where the files should be
-                                    downloaded. Specify the type of file and the
-                                    path separated by a colon ":". All the same
-                                    TYPES as --output are supported.
-                                    Additionally, you can also provide "home"
-                                    (default) and "temp" paths. All intermediary
-                                    files are first downloaded to the temp path
-                                    and then the final files are moved over to
-                                    the home path after download is finished.
-                                    This option is ignored if --output is an
-                                    absolute path
-    -o, --output [TYPES:]TEMPLATE   Output filename template; see "OUTPUT
-                                    TEMPLATE" for details
+    -P, --paths [TYPES:]PATH        下载文件的路径。指定文件类型和路径，以冒号": "分隔。
+                                    支持所有与 --output 相同的类型。
+                                    此外，您还可以提供 "home"(默认)和 "temp"路径。
+                                    所有中间文件都先下载到临时路径，下载完成后再将最终文件移到主路径。
+                                    如果 --output 是绝对路径，该选项将被忽略
+    -o, --output [TYPES:]TEMPLATE   输出文件名模板；详见 "OUTPUT TEMPLATE"(输出模板)
     --output-na-placeholder TEXT    Placeholder for unavailable fields in
                                     "OUTPUT TEMPLATE" (default: "NA")
     --restrict-filenames            Restrict filenames to only ASCII characters,

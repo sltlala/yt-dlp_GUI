@@ -28,14 +28,17 @@ from PySide6.QtWidgets import (
     QFormLayout,
 )
 
+import app
 from app.core.command import CommandThread
+from app.core.ui.customized_class import ErrorMessageBox
 from app.core.ui.subwindow import Console
 from app.core.ui import customized_class
 from app.core import database
+from app.utils._utils import is_valid_url
 
 styleFile = "./core/ui/resources/stylesheets/style.css"  # 样式表的路径
 presetTableName = "commandPreset"
-finalCommand = ""
+final_command = ""
 
 db = database.Database()
 
@@ -69,6 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setFont(QFont("Microsoft YaHei UI", 10))
         self.setWindowIcon(QIcon("./core/ui/resources/icons/favicon.ico"))
 
+    # 加载样式表
     def load_style_sheet(self) -> None:
         global styleFile
         try:
@@ -90,6 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.load_style_sheet()
 
 
+# 系统托盘
 class SystemTray(QSystemTrayIcon):
     def __init__(self, icon, main_window):
         super(SystemTray, self).__init__(icon)
@@ -138,6 +143,7 @@ class SystemTray(QSystemTrayIcon):
                 pass
 
 
+# ytdlp 主界面
 class YtdlpMainTab(QWidget):
     def __init__(self):
         super().__init__()
@@ -262,16 +268,18 @@ class YtdlpMainTab(QWidget):
                 self.output_options_hbox.addWidget(self.output_options_edit)
 
             self.download_button = QPushButton(self.tr("开始下载"))
+            self.download_button.setFixedHeight(40)
             self.download_button.clicked.connect(self.run_final_command_button_clicked)
 
+            # 主布局设置
             self.main_formlayout = QFormLayout()
             self.main_formlayout.addRow(self.url_label, self.download_hbox)
             self.main_formlayout.addRow(self.save_label, self.select_dir_hbox)
             self.main_formlayout.addRow(self.save_name_format_label, self.save_name_format_box)
             self.main_formlayout.addRow(self.download_format_label, self.download_format_hbox)
             self.main_formlayout.addRow(self.set_cookies_label, self.set_cookies_hbox)
-            self.main_formlayout.addRow(None, self.download_button)
             self.main_formlayout.addRow(self.output_format_label, self.output_format_hbox)
+            self.main_formlayout.addRow(None, self.download_button)
             self.main_formlayout.addRow(self.output_label, self.output_options_hbox)
 
             self.main_widget = QWidget()
@@ -316,12 +324,9 @@ class YtdlpMainTab(QWidget):
             self.final_command_text_edit.setPlaceholderText(self.tr("自动生成的总命令"))
             self.final_command_text_edit.setReadOnly(True)
             self.final_command_text_edit.setMaximumHeight(180)
-            self.final_command_run_button = QPushButton(self.tr("运行"))
-            self.final_command_run_button.clicked.connect(self.run_final_command_button_clicked)
 
             self.final_command_vbox = QVBoxLayout()
             self.final_command_vbox.addWidget(self.final_command_text_edit)
-            self.final_command_vbox.addWidget(self.final_command_run_button)
             self.final_command_widget = QWidget()
             self.final_command_widget.setLayout(self.final_command_vbox)
 
@@ -351,13 +356,32 @@ class YtdlpMainTab(QWidget):
         self.preset_list.clear()
         for i in preset_data:
             self.preset_list.addItem(i[1])
-        # 不在这里关数据库了()
-        pass
 
+    # 生成总命令
     @QtCore.Slot()
     def generate_final_command(self):
+        global final_command
         print("generateFinalCommand")
-        return None
+        if self.url_line_edit.text() != "":
+            final_command = "yt-dlp"
+            if self.url_line_edit.text() != "":
+                final_command += " %s" % self.url_line_edit.text()
+            if self.save_path_box.currentText() != "":
+                final_command += " -P %s" % self.save_path_box.currentText()
+            if self.set_cookies_edit.currentText() != "":
+                final_command += " --cookies-from-browser %s" % self.set_cookies_edit.currentText()
+            if self.save_name_format_edit.currentText() != "":
+                final_command += " -o '" + self.save_name_format_edit.currentText() + "'"
+            if self.download_format_edit.text() != "":
+                final_command += " --format '" + self.download_format_edit.text() + "'"
+            if self.output_format_edit.currentText() != "":
+                final_command += " --merge-output-format %s" % self.output_format_edit.currentText()
+            if self.embed_thumbnail_checkbox.isChecked():
+                final_command += " --embed-thumbnail --embed-metadata"
+        else:
+            ErrorMessageBox(self.tr("请填入视频链接！"))
+        self.final_command_text_edit.setPlainText(final_command)
+        return final_command
 
     # 选择文件夹
     @QtCore.Slot()
@@ -380,10 +404,16 @@ class YtdlpMainTab(QWidget):
             self.set_cookies_edit.setCurrentText(file_path[0])
         return file_path
 
-    @QtCore.Slot()
     # 点击运行按钮
+    @QtCore.Slot()
     def run_final_command_button_clicked(self):
         print("runFinalCommandButtonClicked")
+        final_command = self.generate_final_command()
+        if final_command != "":
+            if is_valid_url(self.url_line_edit.text()):
+                self.command_run(final_command)
+            else:
+                ErrorMessageBox(self.tr("请填入正确的视频链接！"))
         return None
 
     @QtCore.Slot()
@@ -414,30 +444,34 @@ class YtdlpMainTab(QWidget):
     def check_preset_help_button_clicked(self):
         return None
 
+    # 点击列出格式id
     @QtCore.Slot()
     def check_info_button_clicked(self):
         print("checkInfoButtonClicked")
-        if self.url_line_edit.text != "":
-            finalCommand = """yt-dlp"""
-            if self.set_cookies_edit.currentText() != "":
-                finalCommand += """ --cookies %s""" % self.set_cookies_edit.text()
-            # if self.youTubeDlProxyBox.currentText() != '':
-            #     finalCommand += ''' --proxy %s''' % self.youTubeDlProxyBox.currentText()
-            finalCommand += """ --proxy %s""" % "http://127.0.0.1:8888"
-            finalCommand += """ %s -F""" % self.url_line_edit.text()
-            thread = CommandThread()
-            thread.command = finalCommand
-            window = Console()
-            window.thread = thread
-            output = window.console_box
-            output_ytdlp = window.console_box_ytdlp
-            thread.output = output
-            thread.signal.connect(output.print)
-            thread.signal_ytdlp.connect(output_ytdlp.print)
-            thread.start()
-        return None
+        if self.url_line_edit.text() != "":
+            finalCommand = "yt-dlp"
+            finalCommand += "--cookies %s" % self.set_cookies_edit.text()
+            finalCommand += "--proxy %s" % "http://127.0.0.1:8888"
+            finalCommand += "%s -F" % self.url_line_edit.text()
+            self.command_run(finalCommand)
+        else:
+            ErrorMessageBox(self.tr("请填入视频链接！"))
+
+    # 执行命令
+    def command_run(self, command):
+        thread = CommandThread()
+        thread.command = command
+        window = Console(self)
+        window.thread = thread
+        output = window.console_box
+        output_ytdlp = window.console_box_ytdlp
+        thread.output = output
+        thread.signal.connect(output.print)
+        thread.signal_ytdlp.connect(output_ytdlp.print)
+        thread.start()
 
 
+# 配置页面
 class ConfigTab(QWidget):
     def __init__(self):
         super().__init__()
@@ -446,16 +480,6 @@ class ConfigTab(QWidget):
         # self.initValue()
 
     def setup_gui(self):
-        # TODO：{
-        #  --format ba+bv,b*
-        #  --merge-output-format MP4,MKV
-        #  --downloader
-        #  --downloader-args aria2c:'-x 16 -k 1M'
-        #  --download-dir D:/
-        #  --paths
-        #  --download-archive './%(channel)s/archive.txt'
-        #  --proxy  http://127.0.0.1:3030/
-        #  }
         self.config_vbox = QVBoxLayout()
 
 

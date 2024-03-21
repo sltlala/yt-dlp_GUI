@@ -1,9 +1,7 @@
-# 添加预设对话框
-import os
-import signal
 import subprocess
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
     QDialog,
     QLabel,
@@ -96,36 +94,27 @@ class Console(QMainWindow):
         self.console_box_ytdlp = OutputBox()  # 把ffmpeg的输出信息用它输出
         self.console_box.setParent(self)
         self.console_box_ytdlp.setParent(self)
-        # self.masterLayout = QVBoxLayout()
-        # self.masterLayout.addWidget(self.consoleBox)
-        # self.masterLayout.addWidget(QPushButton())
-        # self.setLayout(self.masterLayout)
-        # self.masterWidget = QWidget()
-        # self.masterWidget.setLayout(self.masterLayout)
+
         self.split = QSplitter(Qt.Vertical)
         self.split.addWidget(self.console_box)
         self.split.addWidget(self.console_box_ytdlp)
         self.setCentralWidget(self.split)
         self.show()
 
-    def closeEvent(self) -> None:
+    def closeEvent(self, a0: QCloseEvent) -> None:
         try:
             try:
                 # 这个方法可以杀死 subprocess 用了 shell=True 开启的子进程，新测好用！
                 # https://stackoverflow.com/questions/13243807/popen-waiting-for-child-process-even-when-the-immediate-child-has-terminated/13256908#13256908
-                subprocess.call(
-                    "TASKKILL /F /PID {pid} /T".format(pid=self.thread.process.pid), startupinfo=subprocessStartUpInfo
-                )
-
+                # subprocess.call(
+                #     "TASKKILL /F /PID {pid} /T".format(pid=self.thread.process.pid), startupinfo=subprocessStartUpInfo
+                # )
+                self.thread.process.kill()
                 # 这个没新测，但是 Windows 用不了，只能用于 unix 类的系统
                 # os.killpg(os.getpgid(self.thread.process.pid), signal.SIGTERM)
             except AttributeError:
-                pass
-
-            try:
                 self.thread.process.terminate()
-            except AttributeError:
-                pass
+
             self.thread.exit()
             self.thread.setTerminationEnabled(True)
             self.thread.terminate()
