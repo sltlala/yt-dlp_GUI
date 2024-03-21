@@ -105,6 +105,27 @@ class SaveNameFormatComboBox(QComboBox):
         )
 
 
+# 自动将选中的item移到第一位的QComboBox
+class AutoMoveComboBox(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setup()
+
+    def setup(self):
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setEditable(False)
+        self.currentTextChanged.connect(self.move_up())
+
+    def move_up(self):
+        selected_index = self.currentIndex()
+        self.insertItem(0, self.currentText())
+        # 删除原来的位置
+        self.removeItem(selected_index + 1)
+
+        # 设置当前选中项为第一项
+        self.setCurrentIndex(0)
+
+
 # 命令输出窗口中的多行文本框
 class OutputBox(QTextEdit):
     # 定义一个 QTextEdit 类，写入 print 方法。用于输出显示。

@@ -4,31 +4,27 @@ import subprocess
 
 from PySide6.QtCore import QThread, Signal
 
-from app.core.ui import main_window
-from app.core.ui.subwindow import Console
 
-global subprocessStartUpInfo
+subprocessStartUpInfo = subprocess.STARTUPINFO()
+subprocessStartUpInfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+subprocessStartUpInfo.wShowWindow = subprocess.SW_HIDE
 
 
 class CommandThread(QThread):
     signal = Signal(str)
-    signalForFFmpeg = Signal(str)
+    signal_ytdlp = Signal(str)
 
     output = None  # 用于显示输出的控件，如一个 QEditBox，它需要有自定义的 print 方法。
     command = None
 
     def __init__(self, parent=None):
         super(CommandThread, self).__init__(parent)
-        global subprocessStartUpInfo
-        subprocessStartUpInfo = subprocess.STARTUPINFO()
-        subprocessStartUpInfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
-        subprocessStartUpInfo.wShowWindow = subprocess.SW_HIDE
 
     def print(self, text):
         self.signal.emit(text)
 
-    def printForFFmpeg(self, text):
-        self.signalForFFmpeg.emit(text)
+    def print_ytdlp(self, text):
+        self.signal_ytdlp.emit(text)
 
     def run(self):
         self.print(self.tr("开始执行命令\n"))
@@ -44,21 +40,21 @@ class CommandThread(QThread):
         except subprocess.CalledProcessError:
             self.print(self.tr("出错了，本次运行的命令是：\n\n%s") % self.command)
         try:
-            stdout = _BufferedReaderForFFmpeg(self.process.stdout.raw)
+            stdout = _BufferedReaderForYtdlp(self.process.stdout.raw)
             while True:
                 line = stdout.readline()
                 if not line:
                     break
                 try:
-                    self.printForFFmpeg(line.decode("utf-8"))
+                    self.print_ytdlp(line.decode("utf-8"))
                 except UnicodeDecodeError:
-                    self.printForFFmpeg(line.decode("gbk"))
+                    self.print_ytdlp(line.decode("gbk"))
         except AttributeError:
             self.print(self.tr("出错了，本次运行的命令是：\n\n%s") % self.command)
         self.print(self.tr("\n命令执行完毕\n"))
 
 
-# 执行命令
+"""# 执行命令
 def execute(command):
     # 判断一下系统，如果是windows系统，就直接将命令在命令行窗口中运行，避免在程序中运行时候的卡顿。
     # system = platform.system()
@@ -72,15 +68,16 @@ def execute(command):
     thread = CommandThread()  # 新建一个子进程
     thread.command = command  # 将要执行的命令赋予子进程
     window = Console(main_window)  # 显示一个新窗口，用于显示子进程的输出
-    output = window.consoleBox  # 获得新窗口中的输出控件
-    outputForFFmpeg = window.consoleBoxForFFmpeg
+    output = window.console_box  # 获得新窗口中的输出控件
+    outputForFFmpeg = window.console_box_ytdlp
     thread.signal.connect(output.print)  # 将 子进程中的输出信号 连接到 新窗口输出控件的输出槽
-    thread.signalForFFmpeg.connect(outputForFFmpeg.print)  # 将 子进程中的输出信号 连接到 新窗口输出控件的输出槽
+    thread.signal_ytdlp.connect(outputForFFmpeg.print)  # 将 子进程中的输出信号 连接到 新窗口输出控件的输出槽
     window.thread = thread  # 把这里的剪辑子进程赋值给新窗口，这样新窗口就可以在关闭的时候也把进程退出
     thread.start()
+"""
 
 
-class _BufferedReaderForFFmpeg(io.BufferedReader):
+class _BufferedReaderForYtdlp(io.BufferedReader):
     """Method `newline` overriden to *also* treat `\\r` as a line break."""
 
     def readline(self, size=-1):

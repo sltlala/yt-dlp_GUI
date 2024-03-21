@@ -20,8 +20,8 @@ from PySide6.QtWidgets import (
 )
 
 from app.core import database
-from app.core.ui.customized_class import OutputBox
 from app.core.command import subprocessStartUpInfo
+from app.core.ui.customized_class import OutputBox
 
 db = database.Database()
 
@@ -46,10 +46,10 @@ class SetupPresetItemDialog(QDialog):
         self.description_label = QLabel(self.tr("描述"))
         self.description_edit = QTextEdit()
 
-        self.submitButton = QPushButton(self.tr("确定"))
-        self.submitButton.clicked.connect(self.submitButtonClicked)
-        self.cancelButton = QPushButton(self.tr("取消"))
-        self.cancelButton.clicked.connect(lambda: self.close())
+        self.submit_button = QPushButton(self.tr("确定"))
+        self.submit_button.clicked.connect(self.submitButtonClicked)
+        self.cancel_button = QPushButton(self.tr("取消"))
+        self.cancel_button.clicked.connect(lambda: self.close())
 
         self.preset_item_layout = QFormLayout()
         self.preset_item_layout.addRow(self.preset_name_label, self.preset_name_edit)
@@ -57,8 +57,8 @@ class SetupPresetItemDialog(QDialog):
         self.preset_item_layout.addRow(self.description_label, self.description_edit)
 
         self.button_layout = QHBoxLayout()
-        self.button_layout.addWidget(self.submitButton)
-        self.button_layout.addWidget(self.cancelButton)
+        self.button_layout.addWidget(self.submit_button)
+        self.button_layout.addWidget(self.cancel_button)
 
         self.main_widget = QWidget()
         self.main_layout = QVBoxLayout()
@@ -75,7 +75,7 @@ class SetupPresetItemDialog(QDialog):
                 % ("commandPreset", selected_preset)
             ).fetchone()
             if preset_data is not None:
-                self.inputOneOption = preset_data[2]
+                self.preset_name = preset_data[2]
                 self.outputOption = preset_data[3]
                 self.description = preset_data[4]
 
@@ -87,15 +87,15 @@ class Console(QMainWindow):
 
     def __init__(self, parent=None):
         super(Console, self).__init__(parent)
-        self.initGui()
+        self.setup_gui()
 
-    def initGui(self):
+    def setup_gui(self):
         self.setWindowTitle(self.tr("命令运行输出窗口"))
         self.resize(800, 700)
-        self.consoleBox = OutputBox()  # 他就用于输出用户定义的打印信息
-        self.consoleBoxForFFmpeg = OutputBox()  # 把ffmpeg的输出信息用它输出
-        self.consoleBox.setParent(self)
-        self.consoleBoxForFFmpeg.setParent(self)
+        self.console_box = OutputBox()  # 他就用于输出用户定义的打印信息
+        self.console_box_ytdlp = OutputBox()  # 把ffmpeg的输出信息用它输出
+        self.console_box.setParent(self)
+        self.console_box_ytdlp.setParent(self)
         # self.masterLayout = QVBoxLayout()
         # self.masterLayout.addWidget(self.consoleBox)
         # self.masterLayout.addWidget(QPushButton())
@@ -103,8 +103,8 @@ class Console(QMainWindow):
         # self.masterWidget = QWidget()
         # self.masterWidget.setLayout(self.masterLayout)
         self.split = QSplitter(Qt.Vertical)
-        self.split.addWidget(self.consoleBox)
-        self.split.addWidget(self.consoleBoxForFFmpeg)
+        self.split.addWidget(self.console_box)
+        self.split.addWidget(self.console_box_ytdlp)
         self.setCentralWidget(self.split)
         self.show()
 

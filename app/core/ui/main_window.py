@@ -28,8 +28,8 @@ from PySide6.QtWidgets import (
     QFormLayout,
 )
 
-
-from app.core.utils import helper_functions
+from app.core.command import CommandThread
+from app.core.ui.subwindow import Console
 from app.core.ui import customized_class
 from app.core import database
 
@@ -417,6 +417,24 @@ class YtdlpMainTab(QWidget):
     @QtCore.Slot()
     def check_info_button_clicked(self):
         print("checkInfoButtonClicked")
+        if self.url_line_edit.text != "":
+            finalCommand = """yt-dlp"""
+            if self.set_cookies_edit.currentText() != "":
+                finalCommand += """ --cookies %s""" % self.set_cookies_edit.text()
+            # if self.youTubeDlProxyBox.currentText() != '':
+            #     finalCommand += ''' --proxy %s''' % self.youTubeDlProxyBox.currentText()
+            finalCommand += """ --proxy %s""" % "http://127.0.0.1:8888"
+            finalCommand += """ %s -F""" % self.url_line_edit.text()
+            thread = CommandThread()
+            thread.command = finalCommand
+            window = Console()
+            window.thread = thread
+            output = window.console_box
+            output_ytdlp = window.console_box_ytdlp
+            thread.output = output
+            thread.signal.connect(output.print)
+            thread.signal_ytdlp.connect(output_ytdlp.print)
+            thread.start()
         return None
 
 
