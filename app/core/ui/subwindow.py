@@ -91,7 +91,7 @@ class Console(QMainWindow):
 
     def setup_gui(self):
         self.setWindowTitle(self.tr("命令运行输出窗口"))
-        self.resize(800, 700)
+        self.resize(600, 500)
         self.console_box = OutputBox()  # 他就用于输出用户定义的打印信息
         self.console_box_ytdlp = OutputBox()  # 把ffmpeg的输出信息用它输出
         self.console_box.setParent(self)
