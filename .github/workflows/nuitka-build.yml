@@ -70,5 +70,5 @@ jobs:
         with:
           name: ${{ runner.os }} Build
           path: | # match what's created for the 3 OSes
-            .build/launcher.dist/
+            build/launcher.dist/
           retention-days: 1
