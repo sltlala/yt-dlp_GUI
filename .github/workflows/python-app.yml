@@ -82,7 +82,8 @@ jobs:
       run: |
         set -e
         poetry shell
-        nuitka --mingw64 --standalone --lto --show-memory --disable-console --enable-plugins=pyside6 app/launcher.py
+        cd app
+        nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
       working-directory: app
 
 
