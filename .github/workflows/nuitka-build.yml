@@ -62,7 +62,7 @@ jobs:
           # poetry shell
           # poetry run pip list
           poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads  launcher.py
-          ls -R
+          ls -R build
         working-directory: app
 
 
