@@ -61,7 +61,7 @@ jobs:
         run: |
           # poetry shell
           # poetry run pip list
-          poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads --output-dir=build  launcher.py
+          poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads  launcher.py
         working-directory: app
 
 
