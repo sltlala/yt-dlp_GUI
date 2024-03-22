@@ -447,6 +447,8 @@ class YtdlpMainTab(QWidget):
     # 点击列出格式id
     @QtCore.Slot()
     def check_info_button_clicked(self):
+        # TODO 1. 列出格式id，弹窗选择(视频音频各选一个)
+        #      2. 保存上次运行过后的各个设置
         print("checkInfoButtonClicked")
         if self.url_line_edit.text() != "":
             finalCommand = "yt-dlp"
@@ -477,6 +479,9 @@ class ConfigTab(QWidget):
         super().__init__()
         self.config_vbox = None
         self.setup_gui()
+        # TODO: 1. 配置页面，代理、全局下载路径、下载存档
+        #       2. 外部下载器aria2设置 ffmpeg设置以及测试可用性(测试命令行程序版本)
+        #       3.
         # self.initValue()
 
     def setup_gui(self):
@@ -488,6 +493,10 @@ class HelpTab(QWidget):
         super().__init__()
         self.help_vbox = None
         self.setup_gui()
+        # TODO: 1. 程序更新
+        #       2. yt-dlp命令行使用方法
+        #       3. 问题反馈 日志提交
+        #       4. 作者信息
         # self.initValue()
 
     def setup_gui(self):
