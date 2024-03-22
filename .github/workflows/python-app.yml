@@ -50,39 +50,39 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Cache Nuitka cache directory
-      uses: actions/cache@v4
-      with:
-        path: ${{ env.NUITKA_CACHE_DIR }}
-        key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-nuitka-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-
-          ${{ runner.os }}-python-
-          ${{ runner.os }}-
-
-#    - name: Build Executable with Nuitka
-#      uses: Nuitka/Nuitka-Action@main
+#    - name: Cache Nuitka cache directory
+#      uses: actions/cache@v4
 #      with:
-#         nuitka-version: main
-#         script-name: app/launcher.py
-#         # many more Nuitka options available, see action doc, but it's best
-#         # to use nuitka-project: options in your code, so e.g. you can make
-#         # a difference for macOS and create an app bundle there.
-#         onefile: false
-#         standalone: true
-#         mingw64: true
-#         lto: no
-#         show-memory: true
-#         disable-console: true
-#         working-directory: app
-#         enable-plugins: pyside6
+#        path: ${{ env.NUITKA_CACHE_DIR }}
+#        key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-nuitka-${{ github.sha }}
+#        restore-keys: |
+#          ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-
+#          ${{ runner.os }}-python-
+#          ${{ runner.os }}-
 
-    - name: Build with Nuitka
-      shell: bash
-      run: |
-        poetry shell
-        nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
-      working-directory: app
+    - name: Build Executable with Nuitka
+      uses: Nuitka/Nuitka-Action@main
+      with:
+         nuitka-version: main
+         script-name: app/launcher.py
+         # many more Nuitka options available, see action doc, but it's best
+         # to use nuitka-project: options in your code, so e.g. you can make
+         # a difference for macOS and create an app bundle there.
+         onefile: false
+         standalone: true
+         mingw64: true
+         lto: no
+         show-memory: true
+         disable-console: true
+         working-directory: app
+         enable-plugins: pyside6
+
+#    - name: Build with Nuitka
+#      shell: bash
+#      run: |
+#        poetry shell
+#        nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
+#      working-directory: app
 
 
     - name: Upload Artifacts
