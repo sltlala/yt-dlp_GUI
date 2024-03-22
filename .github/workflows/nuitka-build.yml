@@ -69,8 +69,9 @@ jobs:
 
       - name: Build with Nuitka
         shell: PowerShell
-        run: |
+        run:
           poetry shell
+          cd ${{ github.action_path }}
           nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
         working-directory: app
 
