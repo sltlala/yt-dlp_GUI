@@ -33,6 +33,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 poetry
         poetry update
+        poetry shell
         # if [ -f pyproject.toml ]; then poetry update; fi
         # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
@@ -51,6 +52,7 @@ jobs:
          # many more Nuitka options available, see action doc, but it's best
          # to use nuitka-project: options in your code, so e.g. you can make
          # a difference for macOS and create an app bundle there.
+         onefile: false
          standalone: true
          enable-plugins: pyside6
 
