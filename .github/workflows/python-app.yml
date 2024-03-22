@@ -43,8 +43,9 @@ jobs:
          # many more Nuitka options available, see action doc, but it's best
          # to use nuitka-project: options in your code, so e.g. you can make
          # a difference for macOS and create an app bundle there.
-         onefile: true
-        
+         standalone: true
+         enable-plugins: pyside6
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
