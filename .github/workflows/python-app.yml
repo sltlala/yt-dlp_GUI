@@ -40,7 +40,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 poetry
         poetry install --no-root
-        poetry shell
         # if [ -f pyproject.toml ]; then poetry update; fi
         # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
@@ -82,7 +81,8 @@ jobs:
       shell: bash
       run: |
         set -e
-        python -m nuitka --mingw64 --standalone --lto --show-memory --disable-console --enable-plugins=pyside6 app/launcher.py
+        poetry shell
+        nuitka --mingw64 --standalone --lto --show-memory --disable-console --enable-plugins=pyside6 app/launcher.py
       working-directory: app
 
 
