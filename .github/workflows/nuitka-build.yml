@@ -64,7 +64,7 @@ jobs:
           poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads  launcher.py
         working-directory: app
 
-      - run: ls -R build
+      - run: ls -R
 
 
       - name: Upload Artifacts
@@ -72,5 +72,5 @@ jobs:
         with:
           name: ${{ runner.os }} Build
           path: | # match what's created for the 3 OSes
-            build/launcher.dist/
+            launcher.dist/
           retention-days: 1
