@@ -69,8 +69,9 @@ jobs:
 
       - name: Build with Nuitka
         run: |
-          poetry shell
-          nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
+          # poetry shell
+          poetry run pip list
+          poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
         working-directory: app
 
 
