@@ -30,13 +30,13 @@ jobs:
           python-version: "3.10"
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
-#      - uses: Gr1N/setup-poetry@v8
-#      - run: poetry --version
+      - uses: Gr1N/setup-poetry@v8
+      - run: poetry --version
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          poetry install --no-root
           # if [ -f pyproject.toml ]; then poetry update; fi
           # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
@@ -71,6 +71,7 @@ jobs:
         shell: bash
         run: |
           set -e
+          poetry shell
           python -m nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
         working-directory: app
 
