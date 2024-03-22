@@ -64,7 +64,7 @@ jobs:
           poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads  launcher.py
         working-directory: app
 
-      - run: ls -R
+      - run: ls
 
 
       - name: Upload Artifacts
