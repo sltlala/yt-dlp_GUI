@@ -64,7 +64,7 @@ jobs:
       uses: Nuitka/Nuitka-Action@main
       with:
          nuitka-version: main
-         script-name: app/launcher.py
+         script-name: launcher.py
          # many more Nuitka options available, see action doc, but it's best
          # to use nuitka-project: options in your code, so e.g. you can make
          # a difference for macOS and create an app bundle there.
