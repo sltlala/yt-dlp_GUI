@@ -18,7 +18,7 @@ toml = "^0.10.2"
 [[tool.poetry.source]]
 name = "mirrors"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
-priority = "secondary"
+priority = "primary"
 
 [build-system]
 requires = ["poetry-core"]
