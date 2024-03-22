@@ -80,9 +80,7 @@ jobs:
     - name: Build with Nuitka
       shell: bash
       run: |
-        set -e
         poetry shell
-        cd app
         nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 launcher.py
       working-directory: app
 
