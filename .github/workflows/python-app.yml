@@ -62,8 +62,6 @@ jobs:
 
     - name: Build Executable with Nuitka
       uses: Nuitka/Nuitka-Action@main
-      run: |
-        poetry shell
       with:
          nuitka-version: main
          script-name: launcher.py
