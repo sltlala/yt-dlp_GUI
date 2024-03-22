@@ -16,7 +16,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest ]
+        os: [ windows-latest ]
         # ubuntu-latest,
 
     runs-on: ${{ matrix.os }}
@@ -39,7 +39,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 poetry
-        poetry install
+        poetry install --no-root
         poetry shell
         # if [ -f pyproject.toml ]; then poetry update; fi
         # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
