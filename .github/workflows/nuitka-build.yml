@@ -61,7 +61,7 @@ jobs:
         run: |
           # poetry shell
           # poetry run pip list
-          poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads launcher.py
+          poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads --output-dir=build  launcher.py
         working-directory: app
 
 
@@ -70,6 +70,5 @@ jobs:
         with:
           name: ${{ runner.os }} Build
           path: | # match what's created for the 3 OSes
-            build/*.exe
-            build/*.bin
-            build/*.app/**/*
+            build/*.build/
+          retention-days: 1
