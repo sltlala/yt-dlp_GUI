@@ -68,7 +68,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Build with Nuitka
-        shell: bash
+        shell: PowerShell
         run: |
           set -e
           poetry shell
