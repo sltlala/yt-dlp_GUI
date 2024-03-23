@@ -16,6 +16,16 @@ def format_decimal_suffix(num, fmt="%d%s", *, factor=1000):
     return fmt % (converted, suffix)
 
 
+def str_to_bool(value):
+    value = value.lower()
+    if value == "true":
+        return True
+    elif value == "false":
+        return False
+    else:
+        raise ValueError(f"Invalid boolean value: {value}")
+
+
 def format_bytes(bytes):
     return format_decimal_suffix(bytes, "%.2f%sB", factor=1024) or "N/A"
 

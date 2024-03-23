@@ -13,6 +13,7 @@ nuitka = "^2.0.3"
 yt-dlp = "^2024.3.10"
 pre-commit = "^3.6.2"
 ruff = "^0.3.0"
+toml = "^0.10.2"
 
 #[[tool.poetry.source]]
 #name = "mirrors"

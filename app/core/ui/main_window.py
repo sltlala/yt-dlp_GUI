@@ -3,7 +3,7 @@ import sys
 
 from PySide6 import QtWidgets, QtCore
 
-from PySide6.QtCore import QDir, Qt
+from PySide6.QtCore import QDir, Qt, QSettings
 from PySide6.QtGui import QIcon, QAction, QFont, QGuiApplication
 from PySide6.QtWidgets import (
     QMessageBox,
@@ -29,11 +29,13 @@ from PySide6.QtWidgets import (
 )
 
 from app.core.command import CommandThread
-from app.core.ui.customized_class import ErrorMessageBox
+from app.core.functions import read_ini_config
+from app.core.ui.customized_class import ErrorMessageBox, SaveNameFormatComboBox, SavePathComboBox, AutoPasteLineEdit
 from app.core.ui.subwindow import Console
 from app.core.ui import customized_class
 from app.core import database
-from app.utils.utils import is_valid_url
+from app.utils.utils import is_valid_url, str_to_bool
+import toml
 
 style_file = "./resources/style.css"  # 样式表的路径
 preset_table_name = "commandPreset"
@@ -47,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__(parent=None)
         self.setup_gui()
         self.status = self.statusBar()
+        self.config = QSettings("config/config.ini", QSettings.IniFormat)
         self.load_style_sheet()
 
     def setup_gui(self):
@@ -69,6 +72,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("yt-dlp_GUI")
         self.setFont(QFont("Microsoft YaHei UI", 10))
         self.setWindowIcon(QIcon("./resources/favicon.ico"))
+
+    def closeEvent(self, event):
+        self.save_config()
+        super().closeEvent(event)
+
+    # 通过toml文件保存各项的选择
+    def save_config(self):
+        self.config.setValue("History/url_line", self.ytdlpMainTab.url_line_edit.text())
+        self.config.setValue("History/only_download_sub", self.ytdlpMainTab.only_download_sub_checkbox.isChecked())
+        self.config.setValue("History/save_path", self.ytdlpMainTab.save_path_box.currentText())
+        self.config.setValue("History/save_name_format", self.ytdlpMainTab.save_name_format_edit.currentText())
+        self.config.setValue("History/download_format", self.ytdlpMainTab.download_format_edit.text())
+        self.config.setValue("History/cookies", self.ytdlpMainTab.set_cookies_edit.currentText())
+        self.config.setValue("History/output_format", self.ytdlpMainTab.output_format_edit.currentText())
+        self.config.setValue("History/output_options", self.ytdlpMainTab.output_options_edit.toPlainText())
+        self.config.setValue("History/embed_thumbnail", self.ytdlpMainTab.embed_thumbnail_checkbox.isChecked())
+
+        # config = {
+        #     "save_path": self.ytdlpMainTab.save_path_box.currentText(),
+        #     "output_format": self.ytdlpMainTab.output_format_edit.currentText(),
+        #     "output_options": self.ytdlpMainTab.output_options_edit.toPlainText(),
+        #     "cookies": self.ytdlpMainTab.set_cookies_edit.currentText(),
+        #     "embed_thumbnail": self.ytdlpMainTab.embed_thumbnail_checkbox.isChecked(),
+        # }
+        # with open("./config/config.toml", "w") as f:
+        #     toml.dump(config, f)
 
     # 加载样式表
     def load_style_sheet(self) -> None:
@@ -146,13 +175,10 @@ class YtdlpMainTab(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.userPath = os.path.expanduser("~").replace("\\", "/")
-        self.userVideoPath = self.userPath + "/Videos"
-        self.userDownloadPath = self.userPath + "/Downloads"
-        self.userDesktopPath = self.userPath + "/Desktop"
-
-        self.url_line_edit = None
-        self.url_label = None
+        # self.userPath = os.path.expanduser("~").replace("\\", "/")
+        # self.userVideoPath = self.userPath + "/Videos"
+        # self.userDownloadPath = self.userPath + "/Downloads"
+        # self.userDesktopPath = self.userPath + "/Desktop"
 
         self.setup_gui()
         self.init_value()
@@ -162,14 +188,17 @@ class YtdlpMainTab(QWidget):
         db.create_present_table()
         # 刷新预设列表
         self.refresh_list()
+        self.history_config()
 
     def setup_gui(self):
+        self.config = QSettings("config/config.ini", QSettings.IniFormat)
+
         # 下载链接输入和输出选项
         if True:
             # 下载链接输入
             if True:
                 self.url_label = QLabel(self.tr("视频链接："))
-                self.url_line_edit = customized_class.AutoPasteLineEdit()
+                self.url_line_edit = AutoPasteLineEdit()
                 self.url_line_edit.setPlaceholderText(self.tr("输入要下载的视频链接"))
                 self.url_line_edit.setToolTip(self.tr("输入要下载的视频链接"))
                 self.url_line_edit.setMaxLength(100)
@@ -188,10 +217,10 @@ class YtdlpMainTab(QWidget):
             if True:
                 # 保存路径选择框
                 self.save_label = QLabel(self.tr("保存路径："))
-                self.save_path_box = customized_class.SavePathComboBox()
+                self.save_path_box = SavePathComboBox()
+
                 self.save_path_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.save_path_box.setToolTip(self.tr("填入下载保存目录"))
-
                 self.save_path_box.currentTextChanged.connect(self.generate_final_command)
                 # self.save_path_box.textChanged.connect(self.generateFinalCommand)
                 self.select_dir_button = QPushButton(self.tr("选择目录"))
@@ -204,7 +233,7 @@ class YtdlpMainTab(QWidget):
             # 文件命名格式
             if True:
                 self.save_name_format_label = QLabel(self.tr("文件命名格式："))
-                self.save_name_format_edit = customized_class.SaveNameFormatComboBox()
+                self.save_name_format_edit = SaveNameFormatComboBox()
                 self.save_name_format_edit.currentTextChanged.connect(self.generate_final_command)
 
                 self.save_name_format_box = QHBoxLayout()
@@ -227,6 +256,7 @@ class YtdlpMainTab(QWidget):
             if True:
                 self.set_cookies_label = QLabel(self.tr("设置Cookies："))
                 self.set_cookies_edit = QComboBox()
+
                 self.set_cookies_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.set_cookies_edit.addItems(["", "edge", "chrome", "firefox"])
                 self.set_cookies_edit.currentTextChanged.connect(self.generate_final_command)
@@ -244,6 +274,7 @@ class YtdlpMainTab(QWidget):
                 self.output_format_edit = QComboBox()
                 self.output_format_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.output_format_edit.addItems(["mp4", "mkv", "flv", "webm", "mp3", "m4a", "flac", "wav"])
+
                 self.output_format_edit.currentTextChanged.connect(self.generate_final_command)
 
                 self.embed_thumbnail_checkbox = QCheckBox(self.tr("封面-元数据"))
@@ -355,6 +386,26 @@ class YtdlpMainTab(QWidget):
         for i in preset_data:
             self.preset_list.addItem(i[1])
 
+    # 设置历史配置
+    def history_config(self):
+        self.save_path_box.setCurrentText(self.config.value("History/save_path"))
+        self.only_download_sub_checkbox.setChecked(str_to_bool(self.config.value("History/only_download_sub")))
+        self.save_name_format_edit.setCurrentText(self.config.value("History/save_name_format"))
+        self.download_format_edit.setText(self.config.value("History/download_format"))
+        self.set_cookies_edit.setCurrentText(self.config.value("History/cookies"))
+        self.output_format_edit.setCurrentText(self.config.value("History/output_format"))
+        self.embed_thumbnail_checkbox.setChecked(str_to_bool(self.config.value("History/embed_thumbnail")))
+
+    # 设置默认配置
+    def default_config(self):
+        self.save_path_box.setCurrentText(self.config.value("Default/save_path"))
+        self.only_download_sub_checkbox.setChecked(str_to_bool(self.config.value("Default/only_download_sub")))
+        self.save_name_format_edit.setCurrentText(self.config.value("Default/save_name_format"))
+        self.download_format_edit.setText(self.config.value("Default/download_format"))
+        self.set_cookies_edit.setCurrentText(self.config.value("Default/cookies"))
+        self.output_format_edit.setCurrentText(self.config.value("Default/output_format"))
+        self.embed_thumbnail_checkbox.setChecked(str_to_bool(self.config.value("Default/embed_thumbnail")))
+
     # 生成总命令
     @QtCore.Slot()
     def generate_final_command(self):
@@ -384,7 +435,7 @@ class YtdlpMainTab(QWidget):
     def choose_dir_button_clicked(self):
         default_directory = QDir.homePath() + "/videos"
         folder_path = QFileDialog.getExistingDirectory(
-            self, self.tr("选择文件夹"), default_directory, self.tr("所有文件(*.*)")
+            self, self.tr("选择文件夹"), default_directory, QFileDialog.Option.ShowDirsOnly
         )
         if folder_path != "":
             self.save_path_box.setEditText(folder_path)
