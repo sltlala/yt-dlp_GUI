@@ -40,7 +40,7 @@ class CommandThread(QThread):
         except subprocess.CalledProcessError:
             self.print(self.tr("出错了，本次运行的命令是：\n\n%s") % self.command)
         try:
-            stdout = _BufferedReaderForYtdlp(self.process.stdout.raw)
+            stdout = BufferedReaderForYtdlp(self.process.stdout.raw)
             while True:
                 line = stdout.readline()
                 if not line:
@@ -77,7 +77,7 @@ def execute(command):
 """
 
 
-class _BufferedReaderForYtdlp(io.BufferedReader):
+class BufferedReaderForYtdlp(io.BufferedReader):
     """Method `newline` overriden to *also* treat `\\r` as a line break."""
 
     def readline(self, size=-1):

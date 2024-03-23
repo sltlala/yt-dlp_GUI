@@ -1,5 +1,3 @@
-import subprocess
-
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
@@ -18,7 +16,6 @@ from PySide6.QtWidgets import (
 )
 
 from app.core import database
-from app.core.command import subprocessStartUpInfo
 from app.core.ui.customized_class import OutputBox
 
 db = database.Database()

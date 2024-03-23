@@ -3,8 +3,8 @@ import sys
 
 from PySide6 import QtWidgets, QtCore
 
-from PySide6.QtCore import QTranslator, QDir, Qt
-from PySide6.QtGui import QIcon, QAction, QFont, QScreen, QGuiApplication
+from PySide6.QtCore import QDir, Qt
+from PySide6.QtGui import QIcon, QAction, QFont, QGuiApplication
 from PySide6.QtWidgets import (
     QMessageBox,
     QTabWidget,
@@ -34,10 +34,10 @@ from app.core.ui.customized_class import ErrorMessageBox
 from app.core.ui.subwindow import Console
 from app.core.ui import customized_class
 from app.core import database
-from app.utils._utils import is_valid_url
+from app.utils.utils import is_valid_url
 
-styleFile = "./core/ui/resources/stylesheets/style.css"  # 样式表的路径
-presetTableName = "commandPreset"
+style_file = "app/resources/style.css"  # 样式表的路径
+preset_table_name = "commandPreset"
 final_command = ""
 
 db = database.Database()
@@ -58,7 +58,6 @@ class MainWindow(QtWidgets.QMainWindow):
         screen = QGuiApplication.primaryScreen().geometry()
         self.move(screen.width() / 2 - self.width() / 2, screen.height() / 2 - self.height() / 2)
         # self.setMinimumSize(500, 500)
-        # self.setMaximumSize(750, 600)
 
         self.ytdlpMainTab = YtdlpMainTab()  # 主界面
         self.configTab = ConfigTab()  # 配置界面
@@ -70,13 +69,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle("yt-dlp_GUI")
         self.setFont(QFont("Microsoft YaHei UI", 10))
-        self.setWindowIcon(QIcon("./core/ui/resources/icons/favicon.ico"))
+        self.setWindowIcon(QIcon("app/resources/favicon.ico"))
 
     # 加载样式表
     def load_style_sheet(self) -> None:
-        global styleFile
+        global style_file
         try:
-            with open(styleFile, "r", encoding="UTF-8") as style:
+            with open(style_file, "r", encoding="UTF-8") as style:
                 self.setStyleSheet(style.read())
                 self.status.showMessage(self.tr("已成功更新主题"), 800)
         except FileNotFoundError:
@@ -352,7 +351,7 @@ class YtdlpMainTab(QWidget):
     def refresh_list(self):
         # 改用主数据库
         cursor = db.cursor
-        preset_data = cursor.execute("select id, name, outputOption from %s order by id" % (presetTableName))
+        preset_data = cursor.execute("select id, name, outputOption from %s order by id" % (preset_table_name))
         self.preset_list.clear()
         for i in preset_data:
             self.preset_list.addItem(i[1])
@@ -452,9 +451,10 @@ class YtdlpMainTab(QWidget):
         print("checkInfoButtonClicked")
         if self.url_line_edit.text() != "":
             finalCommand = "yt-dlp"
-            finalCommand += "--cookies %s" % self.set_cookies_edit.text()
-            finalCommand += "--proxy %s" % "http://127.0.0.1:8888"
-            finalCommand += "%s -F" % self.url_line_edit.text()
+            finalCommand += " --cookies-from-browser %s" % self.set_cookies_edit.currentText()
+            finalCommand += " --proxy %s" % "http://127.0.0.1:8888"
+            finalCommand += " %s -F" % self.url_line_edit.text()
+            print(finalCommand)
             self.command_run(finalCommand)
         else:
             ErrorMessageBox(self.tr("请填入视频链接！"))

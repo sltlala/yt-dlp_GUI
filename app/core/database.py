@@ -1,6 +1,6 @@
 import sqlite3
 
-presetTableName = "commandPreset"
+preset_table_name = "commandPreset"
 
 
 class Database:
@@ -27,7 +27,7 @@ class Database:
 
     def create_present_table(self):
         cursor = self.connection.cursor()
-        result = cursor.execute('select * from sqlite_master where name = "%s";' % presetTableName)
+        result = cursor.execute('select * from sqlite_master where name = "%s";' % preset_table_name)
         # 将初始预设写入数据库
         if result.fetchone() is None:
             cursor.execute(
@@ -37,7 +37,7 @@ class Database:
                             outputOption TEXT,
                             description TEXT
                             )"""
-                % (presetTableName)
+                % (preset_table_name)
             )
 
             # 新建一个空预设
@@ -51,7 +51,7 @@ class Database:
                             '%s',
                             ''
                             );"""
-                % (presetTableName, presetName)
+                % (preset_table_name, presetName)
             )
 
             # 中日英字幕
@@ -66,7 +66,7 @@ class Database:
                             '--embed-subs --sub-langs "zh.*,en.*,ja"',
                             '%s'
                             );"""
-                % (presetTableName, presetName, description)
+                % (preset_table_name, presetName, description)
             )
 
             # 中文,英语,日语字幕 vtt-->srt
@@ -81,7 +81,7 @@ class Database:
                             '--embed-subs --sub-langs "zh.*,en.*,ja" --sub-format vtt --convert-subs srt',
                             '%s'
                             );"""
-                % (presetTableName, presetName, description)
+                % (preset_table_name, presetName, description)
             )
 
         else:

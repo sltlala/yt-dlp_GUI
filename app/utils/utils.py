@@ -46,7 +46,7 @@ def format_filesize(f, duration_info=None):
 # 正则表达式验证链接格式
 def is_valid_url(url):
     pattern = re.compile(
-        r"^(?:(?:http)s?://)?"  # 协议
+        r"^(?:https?://)?"  # 协议
         r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|)"  # 域名
         r"(?:/?|[/?]\S+)$",
         re.IGNORECASE,

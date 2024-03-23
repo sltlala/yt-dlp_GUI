@@ -23,7 +23,7 @@ try:
 except FileNotFoundError:
     print("更改工作目录失败，关系不大，不用管它")
 
-styleFile = "core/ui/resources/stylesheets/style.css"  # 样式表的路径
+style_file = "core/ui/resources/stylesheets/style.css"  # 样式表的路径
 finalCommand = ""
 
 
@@ -51,16 +51,16 @@ class mainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.helpTab, "帮助")
 
         self.setWindowTitle("yt-dlp_GUI")
-        self.setWindowIcon(QIcon("core/ui/resources/icons/favicon.ico"))
+        self.setWindowIcon(QIcon("resources/favicon.ico"))
 
     def loadStyleSheet(self):
-        global styleFile
+        global style_file
         try:
             try:
-                with open(styleFile, "r", encoding="utf-8") as style:
+                with open(style_file, "r", encoding="utf-8") as style:
                     self.setStyleSheet(style.read())
             except UnicodeDecodeError:
-                with open(styleFile, "r", encoding="gbk") as style:
+                with open(style_file, "r", encoding="gbk") as style:
                     self.setStyleSheet(style.read())
         except FileNotFoundError:
             QMessageBox.warning("主题载入错误", '未能成功载入主题，请确保软件根目录有 "style.css" 文件存在。')
