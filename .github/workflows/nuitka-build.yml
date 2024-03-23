@@ -60,9 +60,6 @@ jobs:
           --disable-console --enable-plugins=pyside6 --assume-yes-for-downloads
           --report=report.xml --output-dir=build main.py
 
-      - run: |
-          ls
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -70,4 +67,4 @@ jobs:
           path: | # match what's created for the 3 OSes
             build/main.dist/
             report.xml
-          retention-days: 1
+          retention-days: 7
