@@ -64,5 +64,5 @@ jobs:
         with:
           name: windows Build
           path: | # match what's created for the 3 OSes
-            app/launcher.dist/
+            build/main.dist/
           retention-days: 1
