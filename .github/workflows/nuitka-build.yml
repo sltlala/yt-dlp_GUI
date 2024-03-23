@@ -53,10 +53,12 @@ jobs:
             ${{ runner.os }}-
 
       - name: Build with Nuitka
-        run: |
-          # poetry shell
-          # poetry run pip list
-          poetry run nuitka --mingw64 --standalone --lto=no --show-memory --disable-console  --enable-plugins=pyside6 --assume-yes-for-downloads --output-dir=build main.py
+        # poetry shell
+        # poetry run pip list
+        run:
+          poetry run nuitka --mingw64 --standalone --lto=no --show-memory
+          --disable-console --enable-plugins=pyside6 --assume-yes-for-downloads
+          --report=report.xml --output-dir=build main.py
 
       - run: |
           ls
