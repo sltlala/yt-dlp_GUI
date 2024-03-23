@@ -28,7 +28,6 @@ from PySide6.QtWidgets import (
     QFormLayout,
 )
 
-import app
 from app.core.command import CommandThread
 from app.core.ui.customized_class import ErrorMessageBox
 from app.core.ui.subwindow import Console

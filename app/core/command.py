@@ -1,5 +1,4 @@
 import io
-import os
 import subprocess
 
 from PySide6.QtCore import QThread, Signal
@@ -40,7 +39,7 @@ class CommandThread(QThread):
         except subprocess.CalledProcessError:
             self.print(self.tr("出错了，本次运行的命令是：\n\n%s") % self.command)
         try:
-            stdout = BufferedReaderForYtdlp(self.process.stdout.raw)
+            stdout = BufferedReader(self.process.stdout.raw)
             while True:
                 line = stdout.readline()
                 if not line:
@@ -77,7 +76,7 @@ def execute(command):
 """
 
 
-class BufferedReaderForYtdlp(io.BufferedReader):
+class BufferedReader(io.BufferedReader):
     """Method `newline` overriden to *also* treat `\\r` as a line break."""
 
     def readline(self, size=-1):

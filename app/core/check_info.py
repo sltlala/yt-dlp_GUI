@@ -1,4 +1,3 @@
-import json
 import yt_dlp
 
 from app.utils.utils import format_filesize
