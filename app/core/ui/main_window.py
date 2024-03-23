@@ -35,7 +35,7 @@ from app.core.ui import customized_class
 from app.core import database
 from app.utils.utils import is_valid_url
 
-style_file = "app/resources/style.css"  # 样式表的路径
+style_file = "./resources/style.css"  # 样式表的路径
 preset_table_name = "commandPreset"
 final_command = ""
 
@@ -68,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle("yt-dlp_GUI")
         self.setFont(QFont("Microsoft YaHei UI", 10))
-        self.setWindowIcon(QIcon("app/resources/favicon.ico"))
+        self.setWindowIcon(QIcon("./resources/favicon.ico"))
 
     # 加载样式表
     def load_style_sheet(self) -> None:
@@ -376,8 +376,6 @@ class YtdlpMainTab(QWidget):
                 final_command += " --merge-output-format %s" % self.output_format_edit.currentText()
             if self.embed_thumbnail_checkbox.isChecked():
                 final_command += " --embed-thumbnail --embed-metadata"
-        else:
-            ErrorMessageBox(self.tr("请填入视频链接！"))
         self.final_command_text_edit.setPlainText(final_command)
         return final_command
 
@@ -449,12 +447,12 @@ class YtdlpMainTab(QWidget):
         #      2. 保存上次运行过后的各个设置
         print("checkInfoButtonClicked")
         if self.url_line_edit.text() != "":
-            finalCommand = "yt-dlp"
-            finalCommand += " --cookies-from-browser %s" % self.set_cookies_edit.currentText()
-            finalCommand += " --proxy %s" % "http://127.0.0.1:8888"
-            finalCommand += " %s -F" % self.url_line_edit.text()
-            print(finalCommand)
-            self.command_run(finalCommand)
+            check_info_command = "yt-dlp"
+            check_info_command += " --cookies-from-browser %s" % self.set_cookies_edit.currentText()
+            check_info_command += " --proxy %s" % "http://127.0.0.1:8888"
+            check_info_command += " %s -F" % self.url_line_edit.text()
+            print(check_info_command)
+            self.command_run(check_info_command)
         else:
             ErrorMessageBox(self.tr("请填入视频链接！"))
 
