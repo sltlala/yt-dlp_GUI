@@ -67,4 +67,5 @@ jobs:
           name: windows Build
           path: | # match what's created for the 3 OSes
             build/main.dist/
+            report.xml
           retention-days: 1
