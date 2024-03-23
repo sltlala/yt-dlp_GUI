@@ -10,6 +10,7 @@ __pycache__
 *.webp
 *.wav
 *.sqlite
+*.xml
 .DS_Store
 .idea
 *build
