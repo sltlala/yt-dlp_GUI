@@ -39,7 +39,7 @@ def float_or_none(v, scale=1, invscale=1, default=None):
         return default
 
 
-def format_filesize(f, duration_info=None):
+def format_filesize(f, duration=None):
     # f是输入的file_format数据
     if "filesize" in f and f["filesize"] is not None:
         return "  %s" % format_bytes(f["filesize"])
@@ -48,9 +48,9 @@ def format_filesize(f, duration_info=None):
     else:
         try:
             # 根据tbr和时长估算文件大小
-            return "~ %s" % format_bytes(int(duration_info * f["tbr"] * (1024 / 8)))
+            return "~ %s" % format_bytes(int(duration * f["tbr"] * (1024 / 8)))
         except (TypeError, KeyError):
-            print("filesize not found")
+            print("filesize not found", end="")
 
 
 # 正则表达式验证链接格式
