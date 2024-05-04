@@ -26,6 +26,10 @@ def str_to_bool(value):
         raise ValueError(f"Invalid boolean value: {value}")
 
 
+def short_chars(s):
+    return s[:13] if len(s) > 13 else s
+
+
 def format_bytes(bytes):
     return format_decimal_suffix(bytes, "%.2f%sB", factor=1024) or "N/A"
 
